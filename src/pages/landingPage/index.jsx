@@ -30,6 +30,17 @@ function CustomGrid() {
                   <option value="lb">Pound</option>
                 </select>
               </>
+            ) : idx === 2 ? (
+              <>
+                <label htmlFor={`select-${idx}`} className="mb-2 text-gray-600">Conversion Factor</label>
+                <select 
+                  id={`select-${idx}`}
+                  className="w-full p-2 border border-gray-300 rounded outline-none bg-white"
+                >
+                  <option value="option1">Option1</option>
+                  <option value="option2">Option2</option>
+                </select>
+              </>
             ) : (
               <>
                 <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Input {idx + 1}</label>
@@ -50,5 +61,6 @@ function CustomGrid() {
 }
 
 export default CustomGrid;
+
 
 
