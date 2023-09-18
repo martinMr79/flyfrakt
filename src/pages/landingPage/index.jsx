@@ -1,7 +1,5 @@
 import React from 'react';
 
-
-
 function CustomGrid() {
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
@@ -19,6 +17,17 @@ function CustomGrid() {
                 >
                   <option value="cm">Centimeter</option>
                   <option value="in">Inch</option>
+                </select>
+              </>
+            ) : idx === 1 ? (
+              <>
+                <label htmlFor={`select-${idx}`} className="mb-2 text-gray-600">Weight</label>
+                <select 
+                  id={`select-${idx}`}
+                  className="w-full p-2 border border-gray-300 rounded outline-none bg-white"
+                >
+                  <option value="kg">Kilogram</option>
+                  <option value="lb">Pound</option>
                 </select>
               </>
             ) : (
