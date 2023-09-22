@@ -85,6 +85,7 @@ const handleQuantityChange = (e) => {
                       className="w-full p-2 border border-gray-300 rounded"
                       value={length}
                       onChange={(e) => setLength(e.target.value)}
+                      min="0"
                     />
                   </div>
               );
@@ -99,6 +100,7 @@ const handleQuantityChange = (e) => {
                       className="w-full p-2 border border-gray-300 rounded"
                       value={width}
                       onChange={(e) => setWidth(e.target.value)}
+                      min="0"
                     />
                   </div>
                 );
@@ -113,6 +115,7 @@ const handleQuantityChange = (e) => {
                         className="w-full p-2 border border-gray-300 rounded"
                         value={height}
                         onChange={(e) => setHeight(e.target.value)}
+                        min="0"
                       />
                     </div>
                   );
@@ -141,6 +144,7 @@ const handleQuantityChange = (e) => {
                         type="number"
                         placeholder="Enter weight"
                         className="w-full p-2 border border-gray-300 rounded"
+                        min="0"
                       />
                     </div>
                   );
