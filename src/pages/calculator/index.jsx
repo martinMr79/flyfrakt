@@ -5,6 +5,8 @@ function CustomGrid() {
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
   const [volume, setVolume] = useState('');
+  const [quantity, setQuantity] = React.useState(1);
+
 
   useEffect(() => {
     if (length && width && height) {
@@ -12,10 +14,20 @@ function CustomGrid() {
       const widthMeters = parseFloat(width) / 100;
       const heightMeters = parseFloat(height) / 100;
 
-      const calculatedVolume = lengthMeters * widthMeters * heightMeters;
+      const calculatedVolume = lengthMeters * widthMeters * heightMeters * parseFloat(quantity);
       setVolume(calculatedVolume.toFixed(3));
     }
-  }, [length, width, height]);
+}, [length, width, height, quantity]);
+
+const handleQuantityChange = (e) => {
+  const inputValue = parseFloat(e.target.value);
+
+  if (inputValue < 1) {
+      setQuantity(1);
+  } else {
+      setQuantity(inputValue);
+  }
+};
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
@@ -109,11 +121,15 @@ function CustomGrid() {
                   <div key={idx} className="flex flex-col">
                     <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Quantity</label>
                     <input
-                      id={`input-${idx}`}
+                      id={`input-6`}
                       type="number"
                       placeholder="Enter quantity"
                       className="w-full p-2 border border-gray-300 rounded"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      min="1"
                     />
+
                   </div>
                 );
                 case 7:
