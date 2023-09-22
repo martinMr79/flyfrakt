@@ -1,4 +1,4 @@
-import CustomGrid from "./pages/landingPage";
+import CustomGrid from "./pages/calculator";
 
 function App() {
   return (
