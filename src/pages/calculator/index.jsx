@@ -5,29 +5,29 @@ function CustomGrid() {
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
   const [volume, setVolume] = useState('');
-  const [quantity, setQuantity] = React.useState(1);
-
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (length && width && height) {
-      const lengthMeters = parseFloat(length) / 100;
-      const widthMeters = parseFloat(width) / 100;
-      const heightMeters = parseFloat(height) / 100;
-
+      const lengthMeters = parseFloat(length) / 100; // Convert cm to m
+      const widthMeters = parseFloat(width) / 100;  // Convert cm to m
+      const heightMeters = parseFloat(height) / 100;  // Convert cm to m
       const calculatedVolume = lengthMeters * widthMeters * heightMeters * parseFloat(quantity);
-      setVolume(calculatedVolume.toFixed(3));
+      const roundedVolume = Math.ceil(calculatedVolume * 1000) / 1000; 
+
+      setVolume(roundedVolume.toFixed(3));
     }
-}, [length, width, height, quantity]);
+  }, [length, width, height, quantity]);
 
-const handleQuantityChange = (e) => {
-  const inputValue = parseFloat(e.target.value);
+  const handleQuantityChange = (e) => {
+    const inputValue = parseInt(e.target.value, 10);
 
-  if (inputValue < 1) {
+    if (inputValue < 1) {
       setQuantity(1);
-  } else {
+    } else {
       setQuantity(inputValue);
-  }
-};
+    }
+  };
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
