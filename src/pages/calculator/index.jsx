@@ -69,8 +69,9 @@ function CustomGrid() {
                     id={`select-${idx}`}
                     className="w-full p-2 border border-gray-300 rounded outline-none bg-white"
                   >
-                    <option value="option1">Option1</option>
-                    <option value="option2">Option2</option>
+                    <option value="option1">166.6 (Air)</option>
+                    <option value="option2">3.5 partload (road)</option>
+                    <option value="option2">Custom</option>
                   </select>
                 </div>
               );
