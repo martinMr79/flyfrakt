@@ -1,198 +1,95 @@
 import React, { useState, useEffect } from 'react';
 
 function CustomGrid() {
-  const [length, setLength] = useState('');
-  const [width, setWidth] = useState('');
-  const [height, setHeight] = useState('');
-  const [volume, setVolume] = useState('');
-  const [quantity, setQuantity] = useState(1);
+  const [rows, setRows] = useState([{ length: '', width: '', height: '', weight: '', quantity: 1, volume: '' }]);
 
   useEffect(() => {
-    if (length && width && height) {
-      const lengthMeters = parseFloat(length) / 100; // Convert cm to m
-      const widthMeters = parseFloat(width) / 100;  // Convert cm to m
-      const heightMeters = parseFloat(height) / 100;  // Convert cm to m
-      const calculatedVolume = lengthMeters * widthMeters * heightMeters * parseFloat(quantity);
-      const roundedVolume = Math.ceil(calculatedVolume * 1000) / 1000; 
+    const updatedRows = rows.map(row => {
+      if (row.length && row.width && row.height && row.quantity) {
+        const volume = calculateVolume(row.length, row.width, row.height, row.quantity);
+        return { ...row, volume };
+      }
+      return row;
+    });
+    setRows(updatedRows);
+  }, [rows]);
 
-      setVolume(roundedVolume.toFixed(3));
-    }
-  }, [length, width, height, quantity]);
+  const calculateVolume = (length, width, height, quantity) => {
+    const volume = (length * width * height) / 1000000; // cm to m3
+    return (volume * quantity).toFixed(3);
+  };
 
-  const handleQuantityChange = (e) => {
-    const inputValue = parseInt(e.target.value, 10);
+  const handleInputChange = (index, field, value) => {
+    const newRows = rows.map((row, idx) => (
+      idx === index ? { ...row, [field]: value } : row
+    ));
+    setRows(newRows);
+  };
 
-    if (inputValue < 1) {
-      setQuantity(1);
-    } else {
-      setQuantity(inputValue);
-    }
+  const addRow = () => {
+    setRows([...rows, { length: '', width: '', height: '', weight: '', quantity: 1, volume: '' }]);
+  };
+
+  const removeRow = (index) => {
+    setRows(rows.filter((_, idx) => idx !== index));
   };
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
       <h1 className='text-center mb-5'>Volume weight</h1>
-      <div className="bg-gray-200 w-full px-5 py-10 grid grid-cols-3 gap-5">
-        {[...Array(9)].map((_, idx) => {
-          switch (idx) {
-            case 0:
-              return (
-                <div key={idx} className="flex flex-col">
-                  <label htmlFor={`select-${idx}`} className="mb-2 text-gray-600">Dimensions</label>
-                  <select 
-                    id={`select-${idx}`}
-                    className="w-full p-2 border border-gray-300 rounded outline-none bg-white"
-                  >
-                    <option value="cm">Centimeter</option>
-                    <option value="in">Inch</option>
-                  </select>
-                </div>
-              );
-            case 1:
-              return (
-                <div key={idx} className="flex flex-col">
-                  <label htmlFor={`select-${idx}`} className="mb-2 text-gray-600">Weight</label>
-                  <select 
-                    id={`select-${idx}`}
-                    className="w-full p-2 border border-gray-300 rounded outline-none bg-white"
-                  >
-                    <option value="kg">Kilogram</option>
-                    <option value="lb">Pound</option>
-                  </select>
-                </div>
-              );
-            case 2:
-              return (
-                <div key={idx} className="flex flex-col">
-                  <label htmlFor={`select-${idx}`} className="mb-2 text-gray-600">Conversion Factor</label>
-                  <select 
-                    id={`select-${idx}`}
-                    className="w-full p-2 border border-gray-300 rounded outline-none bg-white"
-                  >
-                    <option value="option1">166.6 (Air)</option>
-                    <option value="option2">3.5 partload (road)</option>
-                    <option value="option2">Custom</option>
-                  </select>
-                </div>
-              );
-              case 3:
-                return (
-                  <div key={idx} className="flex flex-col">
-                    <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Length</label>
-                    <input
-                      id={`input-${idx}`}
-                      type="number"
-                      placeholder="Enter length"
-                      className="w-full p-2 border border-gray-300 rounded"
-                      value={length}
-                      onChange={(e) => setLength(e.target.value)}
-                      min="0"
-                    />
-                  </div>
-              );
-              case 4:
-                return (
-                  <div key={idx} className="flex flex-col">
-                    <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Width</label>
-                    <input
-                      id={`input-${idx}`}
-                      type="number"
-                      placeholder="Enter width"
-                      className="w-full p-2 border border-gray-300 rounded"
-                      value={width}
-                      onChange={(e) => setWidth(e.target.value)}
-                      min="0"
-                    />
-                  </div>
-                );
-                case 5:
-                  return (
-                    <div key={idx} className="flex flex-col">
-                      <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Height</label>
-                      <input
-                        id={`input-${idx}`}
-                        type="number"
-                        placeholder="Enter height"
-                        className="w-full p-2 border border-gray-300 rounded"
-                        value={height}
-                        onChange={(e) => setHeight(e.target.value)}
-                        min="0"
-                      />
-                    </div>
-                  );
-              case 6:
-                return (
-                  <div key={idx} className="flex flex-col">
-                    <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Quantity</label>
-                    <input
-                      id={`input-6`}
-                      type="number"
-                      placeholder="Enter quantity"
-                      className="w-full p-2 border border-gray-300 rounded"
-                      value={quantity}
-                      onChange={handleQuantityChange}
-                      min="1"
-                    />
-
-                  </div>
-                );
-                case 7:
-                  return (
-                    <div key={idx} className="flex flex-col">
-                      <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Gross Weight</label>
-                      <input
-                        id={`input-${idx}`}
-                        type="number"
-                        placeholder="Enter weight"
-                        className="w-full p-2 border border-gray-300 rounded"
-                        min="0"
-                      />
-                    </div>
-                  );
-                  case 8:
-                    return (
-                      <div key={idx} className="flex flex-col">
-                        <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Volume m3</label>
-                        <input
-                          id={`input-${idx}`}
-                          type="text"
-                          value={volume}
-                          className="w-full p-2 border border-gray-300 rounded bg-gray-300"
-                          disabled
-                        />
-                      </div>
-                    );
-                default:
-                  return (
-                    <div key={idx} className="flex flex-col">
-                      <label htmlFor={`input-${idx}`} className="mb-2 text-gray-600">Input {idx + 1}</label>
-                      <input
-                        id={`input-${idx}`}
-                        type="text"
-                        placeholder={`Input ${idx + 1}`}
-                        className="w-full p-2 border border-gray-300 rounded"
-                      />
-                    </div>
-                  );
-              }
-            })}
-
-            <hr className="col-span-3 my-5 border-t border-gray-300" />
-
-            
-        <button className="col-span-3 lg:col-span-1 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-          Add row
-        </button>
-
+      <div className="bg-gray-200 w-full px-5 py-10">
+        {rows.map((row, idx) => (
+          <div key={idx} className="grid grid-cols-3 gap-5">
+            {/* Length Input */}
+            <input
+              type="number"
+              placeholder="Length"
+              value={row.length}
+              onChange={(e) => handleInputChange(idx, 'length', e.target.value)}
+            />
+            {/* Width Input */}
+            <input
+              type="number"
+              placeholder="Width"
+              value={row.width}
+              onChange={(e) => handleInputChange(idx, 'width', e.target.value)}
+            />
+            {/* Height Input */}
+            <input
+              type="number"
+              placeholder="Height"
+              value={row.height}
+              onChange={(e) => handleInputChange(idx, 'height', e.target.value)}
+            />
+            {/* Weight Input */}
+            <input
+              type="number"
+              placeholder="Weight"
+              value={row.weight}
+              onChange={(e) => handleInputChange(idx, 'weight', e.target.value)}
+            />
+            {/* Quantity Input */}
+            <input
+              type="number"
+              placeholder="Quantity"
+              value={row.quantity}
+              onChange={(e) => handleInputChange(idx, 'quantity', e.target.value)}
+            />
+            {/* Button to remove a row */}
+            {rows.length > 1 && (
+              <button onClick={() => removeRow(idx)}>
+                Remove
+              </button>
+            )}
+            {/* Display Calculated Volume */}
+            <div>Volume: {row.volume} m³</div>
+          </div>
+        ))}
+        <button onClick={addRow}>Add Row</button>
       </div>
     </div>
   );
 }
 
 export default CustomGrid;
-
-
-
-
-
 
