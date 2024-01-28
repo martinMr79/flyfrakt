@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 function CustomGrid() {
-  const [rows, setRows] = useState([{ length: '', width: '', height: '', weight: '', quantity: 1, volume: '' }]);
+  const [rows, setRows] = useState([{ length: '', width: '', height: '', weight: '', quantity: 1, unit: 'cm', volume: '' }]);
   const [conversionFactor, setConversionFactor] = useState(166.6); 
 
   useEffect(() => {
@@ -15,9 +15,20 @@ function CustomGrid() {
     setRows(updatedRows);
   }, [rows]);
 
-  const calculateVolume = (length, width, height, quantity) => {
-    const volume = (length * width * height) / 1000000; // cm to m3
+  const calculateVolume = (length, width, height, quantity, unit) => {
+    let convertedLength = unit === 'in' ? length * 2.54 : length; // Convert inches to cm
+    let convertedWidth = unit === 'in' ? width * 2.54 : width;
+    let convertedHeight = unit === 'in' ? height * 2.54 : height;
+
+    const volume = (convertedLength * convertedWidth * convertedHeight) / 1000000; // cm to m3
     return (volume * quantity).toFixed(3);
+  };
+
+  const handleInputChange = (index, field, value) => {
+    const newRows = rows.map((row, idx) => (
+      idx === index ? { ...row, [field]: value } : row
+    ));
+    setRows(newRows);
   };
 
   const calculateTotalVolume = () => {
@@ -27,15 +38,6 @@ function CustomGrid() {
   const calculateChargeableWeight = () => {
     const totalVolume = calculateTotalVolume();
     return (totalVolume * conversionFactor).toFixed(2);
-  };
-
-
-
-  const handleInputChange = (index, field, value) => {
-    const newRows = rows.map((row, idx) => (
-      idx === index ? { ...row, [field]: value } : row
-    ));
-    setRows(newRows);
   };
 
   const addRow = () => {
@@ -87,6 +89,14 @@ function CustomGrid() {
               value={row.quantity}
               onChange={(e) => handleInputChange(idx, 'quantity', e.target.value)}
             />
+                        <select
+              value={row.unit}
+              onChange={(e) => handleInputChange(idx, 'unit', e.target.value)}
+            >
+              <option value="cm">cm</option>
+              <option value="in">in</option>
+            </select>
+
             {/* Button to remove a row */}
             {rows.length > 1 && (
               <button onClick={() => removeRow(idx)}>
@@ -97,7 +107,7 @@ function CustomGrid() {
             <div>Volume: {row.volume} m³</div>
           </div>
         ))}
-        <button onClick={addRow}>Add Row</button>
+        <button onClick={addRow} className='mt-12'>Add Row</button>
         <div className="totals">
           <div>Total CBM: {calculateTotalVolume()} m³</div>
           <div>Total Chargeable Weight: {calculateChargeableWeight()} kg</div>
