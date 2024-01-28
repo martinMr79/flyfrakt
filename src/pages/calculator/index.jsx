@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 function CustomGrid() {
   const [rows, setRows] = useState([{ length: '', width: '', height: '', weight: '', quantity: 1, volume: '' }]);
+  const [conversionFactor, setConversionFactor] = useState(166.6); 
 
   useEffect(() => {
     const updatedRows = rows.map(row => {
@@ -18,6 +19,17 @@ function CustomGrid() {
     const volume = (length * width * height) / 1000000; // cm to m3
     return (volume * quantity).toFixed(3);
   };
+
+  const calculateTotalVolume = () => {
+    return rows.reduce((total, row) => total + parseFloat(row.volume || 0), 0).toFixed(3);
+  };
+
+  const calculateChargeableWeight = () => {
+    const totalVolume = calculateTotalVolume();
+    return (totalVolume * conversionFactor).toFixed(2);
+  };
+
+
 
   const handleInputChange = (index, field, value) => {
     const newRows = rows.map((row, idx) => (
@@ -86,6 +98,11 @@ function CustomGrid() {
           </div>
         ))}
         <button onClick={addRow}>Add Row</button>
+        <div className="totals">
+          <div>Total CBM: {calculateTotalVolume()} m³</div>
+          <div>Total Chargeable Weight: {calculateChargeableWeight()} kg</div>
+        </div>      
+
       </div>
     </div>
   );
