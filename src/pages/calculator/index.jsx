@@ -7,13 +7,15 @@ function CustomGrid() {
   useEffect(() => {
     const updatedRows = rows.map(row => {
       if (row.length && row.width && row.height && row.quantity) {
-        const volume = calculateVolume(row.length, row.width, row.height, row.quantity);
+        // Pass the unit of the row to the calculateVolume function
+        const volume = calculateVolume(row.length, row.width, row.height, row.quantity, row.unit);
         return { ...row, volume };
       }
       return row;
     });
     setRows(updatedRows);
   }, [rows]);
+  
 
   const calculateVolume = (length, width, height, quantity, unit) => {
     let convertedLength = unit === 'in' ? length * 2.54 : length; // Convert inches to cm
@@ -41,8 +43,9 @@ function CustomGrid() {
   };
 
   const addRow = () => {
-    setRows([...rows, { length: '', width: '', height: '', weight: '', quantity: 1, volume: '' }]);
+    setRows([...rows, { length: '', width: '', height: '', weight: '', quantity: 1, unit: 'cm', volume: '' }]);
   };
+  
 
   const removeRow = (index) => {
     setRows(rows.filter((_, idx) => idx !== index));
