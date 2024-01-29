@@ -27,10 +27,16 @@ function CustomGrid() {
   };
 
   const handleInputChange = (index, field, value) => {
+    const newValue = field !== 'unit' && value < 0 ? 0 : value;
+  
     const newRows = rows.map((row, idx) => (
-      idx === index ? { ...row, [field]: value } : row
+      idx === index ? { ...row, [field]: newValue } : row
     ));
     setRows(newRows);
+  };
+
+  const calculateTotalWeight = () => {
+    return rows.reduce((total, row) => total + parseFloat(row.weight || 0), 0).toFixed(2);
   };
 
   const calculateTotalVolume = () => {
@@ -110,10 +116,11 @@ function CustomGrid() {
             <div>Volume: {row.volume} m³</div>
           </div>
         ))}
-        <button onClick={addRow} className='mt-12'>Add Row</button>
+        <button onClick={addRow} class='my-10'>Add Row</button>
         <div className="totals">
+          <div>Total Weight: {calculateTotalWeight()} kg</div>
           <div>Total CBM: {calculateTotalVolume()} m³</div>
-          <div>Total Chargeable Weight: {calculateChargeableWeight()} kg</div>
+          <div class="font-bold">Total Chargeable Weight: {calculateChargeableWeight()} kg</div>
         </div>      
 
       </div>
