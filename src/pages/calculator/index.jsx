@@ -57,6 +57,9 @@ function CustomGrid() {
     setRows(rows.filter((_, idx) => idx !== index));
   };
 
+  const convertKgToLbs = (kg) => (kg * 2.20462).toFixed(2);
+  const convertCubicMetersToCubicFeet = (cubicMeters) => (cubicMeters * 35.3147).toFixed(3);
+
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
       <h1 className='text-center mb-5'>Volume weight</h1>
@@ -118,9 +121,9 @@ function CustomGrid() {
         ))}
         <button onClick={addRow} class='my-10'>Add Row</button>
         <div className="totals">
-          <div>Total Weight: {calculateTotalWeight()} kg</div>
-          <div>Total CBM: {calculateTotalVolume()} m³</div>
-          <div class="font-bold">Total Chargeable Weight: {calculateChargeableWeight()} kg</div>
+          <div>Total Weight: {calculateTotalWeight()} kg / {convertKgToLbs(calculateTotalWeight())} lbs</div>
+          <div>Total CBM: {calculateTotalVolume()} m³ / {convertCubicMetersToCubicFeet(calculateTotalVolume())} ft³</div>
+          <div className="font-bold">Total Chargeable Weight: {calculateChargeableWeight()} kg / {convertKgToLbs(calculateChargeableWeight())} lbs</div>
         </div>      
 
       </div>
