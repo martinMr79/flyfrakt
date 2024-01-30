@@ -111,15 +111,27 @@ function CustomGrid() {
 
             {/* Button to remove a row */}
             {rows.length > 1 && (
-              <button onClick={() => removeRow(idx)}>
-                Remove
-              </button>
-            )}
+  <img 
+    src="/icons/delete_icon.svg" 
+    alt="Delete" 
+    className="w-4 h-4 cursor-pointer hover:text-red-600" 
+    onClick={() => removeRow(idx)}
+  />
+)}
+
+
+
+            
             {/* Display Calculated Volume */}
             <div>Volume: {row.volume} m³</div>
           </div>
         ))}
-        <button onClick={addRow} class='my-10'>Add Row</button>
+        <button 
+         onClick={addRow} 
+         className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out my-4">
+         Add Row
+        </button>
+
         <div className="totals">
           <div>Total Weight: {calculateTotalWeight()} kg / {convertKgToLbs(calculateTotalWeight())} lbs</div>
           <div>Total CBM: {calculateTotalVolume()} m³ / {convertCubicMetersToCubicFeet(calculateTotalVolume())} ft³</div>
