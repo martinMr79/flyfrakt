@@ -4,19 +4,6 @@ function CustomGrid() {
   const [rows, setRows] = useState([{ length: '', width: '', height: '', weight: '', quantity: 1, unit: 'cm', volume: '' }]);
   const [conversionFactor, setConversionFactor] = useState(166.6); 
 
-  useEffect(() => {
-    const updatedRows = rows.map(row => {
-      if (row.length && row.width && row.height && row.quantity) {
-        // Pass the unit of the row to the calculateVolume function
-        const volume = calculateVolume(row.length, row.width, row.height, row.quantity, row.unit);
-        return { ...row, volume };
-      }
-      return row;
-    });
-    setRows(updatedRows);
-  }, [rows]);
-  
-
   const calculateVolume = (length, width, height, quantity, unit) => {
     let convertedLength = unit === 'in' ? length * 2.54 : length; // Convert inches to cm
     let convertedWidth = unit === 'in' ? width * 2.54 : width;
@@ -28,11 +15,18 @@ function CustomGrid() {
 
   const handleInputChange = (index, field, value) => {
     const newValue = field !== 'unit' && value < 0 ? 0 : value;
-  
-    const newRows = rows.map((row, idx) => (
-      idx === index ? { ...row, [field]: newValue } : row
-    ));
-    setRows(newRows);
+    
+    setRows(rows.map((row, idx) => {
+      if (idx === index) {
+        const updatedRow = { ...row, [field]: newValue };
+        // Calculate volume only if the row that changed is the one being updated
+        if (field === 'length' || field === 'width' || field === 'height' || field === 'quantity' || field === 'unit') {
+          updatedRow.volume = calculateVolume(updatedRow.length, updatedRow.width, updatedRow.height, updatedRow.quantity, updatedRow.unit);
+        }
+        return updatedRow;
+      }
+      return row;
+    }));
   };
 
   const calculateTotalWeight = () => {
@@ -64,68 +58,76 @@ function CustomGrid() {
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
       <h1 className='text-center mb-5'>Volume weight</h1>
       <div className="bg-gray-200 w-full px-5 py-10">
-        {rows.map((row, idx) => (
-          <div key={idx} className="grid grid-cols-3 gap-5">
-            {/* Length Input */}
-            <input
-              type="number"
-              placeholder="Length"
-              value={row.length}
-              onChange={(e) => handleInputChange(idx, 'length', e.target.value)}
-            />
-            {/* Width Input */}
-            <input
-              type="number"
-              placeholder="Width"
-              value={row.width}
-              onChange={(e) => handleInputChange(idx, 'width', e.target.value)}
-            />
-            {/* Height Input */}
-            <input
-              type="number"
-              placeholder="Height"
-              value={row.height}
-              onChange={(e) => handleInputChange(idx, 'height', e.target.value)}
-            />
-            {/* Weight Input */}
-            <input
-              type="number"
-              placeholder="Weight"
-              value={row.weight}
-              onChange={(e) => handleInputChange(idx, 'weight', e.target.value)}
-            />
-            {/* Quantity Input */}
-            <input
-              type="number"
-              placeholder="Quantity"
-              value={row.quantity}
-              onChange={(e) => handleInputChange(idx, 'quantity', e.target.value)}
-            />
-                        <select
-              value={row.unit}
-              onChange={(e) => handleInputChange(idx, 'unit', e.target.value)}
-            >
-              <option value="cm">cm</option>
-              <option value="in">in</option>
-            </select>
+      {rows.map((row, idx) => (
+  <div key={idx} className="flex items-center mb-3">
+    {/* Container for the two rows of inputs */}
+    <div className="flex flex-col flex-grow mr-2">
+      {/* First row with Length, Width, Height inputs */}
+      <div className="flex mb-2 space-x-2">
+        <input
+          type="number"
+          placeholder="Length"
+          value={row.length}
+          onChange={(e) => handleInputChange(idx, 'length', e.target.value)}
+          className="py-2 px-4 w-1/3" // Assign 1/4 width
+        />
+        <input
+          type="number"
+          placeholder="Width"
+          value={row.width}
+          onChange={(e) => handleInputChange(idx, 'width', e.target.value)}
+          className="py-2 px-4 w-1/3" // Assign 1/4 width
+        />
+        <input
+          type="number"
+          placeholder="Height"
+          value={row.height}
+          onChange={(e) => handleInputChange(idx, 'height', e.target.value)}
+          className="py-2 px-4 w-1/3" // Assign 1/4 width
+        />
+      </div>
+      {/* Second row with Weight, Quantity inputs, and Unit Selection Dropdown */}
+      <div className="flex space-x-2">
+        <input
+          type="number"
+          placeholder="Weight"
+          value={row.weight}
+          onChange={(e) => handleInputChange(idx, 'weight', e.target.value)}
+          className="py-2 px-4 w-1/3" // Assign 1/4 width
+        />
+        <input
+          type="number"
+          placeholder="Quantity"
+          value={row.quantity}
+          onChange={(e) => handleInputChange(idx, 'quantity', e.target.value)}
+          className="py-2 px-4 w-1/3" // Assign 1/4 width
+        />
+        <select
+          value={row.unit}
+          onChange={(e) => handleInputChange(idx, 'unit', e.target.value)}
+          className="py-2 px-4 w-1/3" // Assign 1/4 width
+        >
+          <option value="cm">cm</option>
+          <option value="in">in</option>
+        </select>
+      </div>
+    </div>
+    {/* Delete Icon */}
+    {rows.length > 1 && (
+      <img 
+        src="/icons/delete_icon.svg" 
+        alt="Delete" 
+        className="w-4 h-4 cursor-pointer" 
+        onClick={() => removeRow(idx)}
+      />
+    )}
+  </div>
+))}
 
-            {/* Button to remove a row */}
-            {rows.length > 1 && (
-  <img 
-    src="/icons/delete_icon.svg" 
-    alt="Delete" 
-    className="w-4 h-4 cursor-pointer hover:text-red-600" 
-    onClick={() => removeRow(idx)}
-  />
-)}
 
 
 
-            
-            {/* Display Calculated Volume */}
-            <div>Volume: {row.volume} m³</div>
-          </div>
-        ))}
+
         <button 
          onClick={addRow} 
          className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out my-4">
