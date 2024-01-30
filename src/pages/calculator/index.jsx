@@ -63,27 +63,27 @@ function CustomGrid() {
     {/* Container for the two rows of inputs */}
     <div className="flex flex-col flex-grow mr-2">
       {/* First row with Length, Width, Height inputs */}
-      <div className="flex mb-2 space-x-2">
+      <div className="flex mb-2 space-x-2  mt-4">
         <input
           type="number"
           placeholder="Length"
           value={row.length}
           onChange={(e) => handleInputChange(idx, 'length', e.target.value)}
-          className="py-2 px-4 w-1/3" // Assign 1/4 width
+          className="py-2 px-4 w-1/3"
         />
         <input
           type="number"
           placeholder="Width"
           value={row.width}
           onChange={(e) => handleInputChange(idx, 'width', e.target.value)}
-          className="py-2 px-4 w-1/3" // Assign 1/4 width
+          className="py-2 px-4 w-1/3"
         />
         <input
           type="number"
           placeholder="Height"
           value={row.height}
           onChange={(e) => handleInputChange(idx, 'height', e.target.value)}
-          className="py-2 px-4 w-1/3" // Assign 1/4 width
+          className="py-2 px-4 w-1/3"
         />
       </div>
       {/* Second row with Weight, Quantity inputs, and Unit Selection Dropdown */}
@@ -93,19 +93,19 @@ function CustomGrid() {
           placeholder="Weight"
           value={row.weight}
           onChange={(e) => handleInputChange(idx, 'weight', e.target.value)}
-          className="py-2 px-4 w-1/3" // Assign 1/4 width
+          className="py-2 px-4 w-1/3"
         />
         <input
           type="number"
           placeholder="Quantity"
           value={row.quantity}
           onChange={(e) => handleInputChange(idx, 'quantity', e.target.value)}
-          className="py-2 px-4 w-1/3" // Assign 1/4 width
+          className="py-2 px-4 w-1/3"
         />
         <select
           value={row.unit}
           onChange={(e) => handleInputChange(idx, 'unit', e.target.value)}
-          className="py-2 px-4 w-1/3" // Assign 1/4 width
+          className="py-2 px-4 w-1/3"
         >
           <option value="cm">cm</option>
           <option value="in">in</option>
@@ -117,7 +117,7 @@ function CustomGrid() {
       <img 
         src="/icons/delete_icon.svg" 
         alt="Delete" 
-        className="w-4 h-4 cursor-pointer" 
+        className="w-4 h-4 ml-2 cursor-pointer" 
         onClick={() => removeRow(idx)}
       />
     )}
