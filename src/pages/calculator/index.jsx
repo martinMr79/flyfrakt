@@ -1,17 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 function CustomGrid() {
   const [rows, setRows] = useState([{ length: '', width: '', height: '', weight: '', quantity: 1, unit: 'cm', volume: '' }]);
+  // eslint-disable-next-line
   const [conversionFactor, setConversionFactor] = useState(166.6); 
 
-  const calculateVolume = (length, width, height, quantity, unit) => {
-    let convertedLength = unit === 'in' ? length * 2.54 : length; // Convert inches to cm
-    let convertedWidth = unit === 'in' ? width * 2.54 : width;
-    let convertedHeight = unit === 'in' ? height * 2.54 : height;
+  // Converts from centimeters to inches
+const convertCmToInches = (cm) => (cm / 2.54).toFixed(2);
 
-    const volume = (convertedLength * convertedWidth * convertedHeight) / 1000000; // cm to m3
-    return (volume * quantity).toFixed(3);
-  };
+// Converts from inches to centimeters
+const convertInchesToCm = (inches) => (inches * 2.54).toFixed(2);
+
+// Converts from kilograms to pounds
+const convertKgToLbs = (kg) => (kg * 2.20462).toFixed(2);
+
+// Converts from pounds to kilograms
+const convertLbsToKg = (lbs) => (lbs / 2.20462).toFixed(2);
+
+const calculateVolume = (length, width, height, quantity, unit) => {
+  let convertedLength = unit === 'in' ? convertInchesToCm(length) : length;
+  let convertedWidth = unit === 'in' ? convertInchesToCm(width) : width;
+  let convertedHeight = unit === 'in' ? convertInchesToCm(height) : height;
+
+  const volume = (convertedLength * convertedWidth * convertedHeight) / 1000000; // Convert to cubic meters
+  return (volume * quantity).toFixed(3); 
+};
+
 
   const handleInputChange = (index, field, value) => {
     const newValue = field !== 'unit' && value < 0 ? 0 : value;
@@ -51,18 +65,16 @@ function CustomGrid() {
     setRows(rows.filter((_, idx) => idx !== index));
   };
 
-  const convertKgToLbs = (kg) => (kg * 2.20462).toFixed(2);
+
   const convertCubicMetersToCubicFeet = (cubicMeters) => (cubicMeters * 35.3147).toFixed(3);
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
-      <h1 className='text-center mb-5'>Volume weight</h1>
+      <h1 className='text-center mb-5 text-lg'>Airfreight Chargeable weight calculator</h1>
       <div className="bg-gray-200 w-full px-5 py-10">
       {rows.map((row, idx) => (
   <div key={idx} className="flex items-center mb-3">
-    {/* Container for the two rows of inputs */}
-    <div className="flex flex-col flex-grow mr-2">
-      {/* First row with Length, Width, Height inputs */}
+    <div className="flex flex-col flex-grow mr-2">    
       <div className="flex mb-2 space-x-2  mt-4">
         <input
           type="number"
@@ -71,6 +83,7 @@ function CustomGrid() {
           onChange={(e) => handleInputChange(idx, 'length', e.target.value)}
           className="py-2 px-4 w-1/3"
         />
+       
         <input
           type="number"
           placeholder="Width"
@@ -78,6 +91,7 @@ function CustomGrid() {
           onChange={(e) => handleInputChange(idx, 'width', e.target.value)}
           className="py-2 px-4 w-1/3"
         />
+       
         <input
           type="number"
           placeholder="Height"
@@ -85,8 +99,9 @@ function CustomGrid() {
           onChange={(e) => handleInputChange(idx, 'height', e.target.value)}
           className="py-2 px-4 w-1/3"
         />
+      
       </div>
-      {/* Second row with Weight, Quantity inputs, and Unit Selection Dropdown */}
+      
       <div className="flex space-x-2">
         <input
           type="number"
@@ -95,6 +110,7 @@ function CustomGrid() {
           onChange={(e) => handleInputChange(idx, 'weight', e.target.value)}
           className="py-2 px-4 w-1/3"
         />
+ 
         <input
           type="number"
           placeholder="Quantity"
@@ -111,6 +127,12 @@ function CustomGrid() {
           <option value="in">in</option>
         </select>
       </div>
+      <div className="flex justify-between text-sm text-gray-600">
+      <span>L: {row.unit === 'cm' ? convertCmToInches(row.length) + ' in' : convertInchesToCm(row.length) + ' cm'}</span>
+      <span>W: {row.unit === 'cm' ? convertCmToInches(row.width) + ' in' : convertInchesToCm(row.width) + ' cm'}</span>
+      <span>H: {row.unit === 'cm' ? convertCmToInches(row.height) + ' in' : convertInchesToCm(row.height) + ' cm'}</span>
+      <span>Weight: {row.unit === 'cm' ? convertKgToLbs(row.weight) + ' lbs' : convertLbsToKg(row.weight) + ' kg'}</span>
+    </div>
     </div>
     {/* Delete Icon */}
     {rows.length > 1 && (
@@ -123,10 +145,6 @@ function CustomGrid() {
     )}
   </div>
 ))}
-
-
-
-
 
         <button 
          onClick={addRow} 
