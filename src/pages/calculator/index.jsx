@@ -12,8 +12,8 @@ function CustomGrid() {
       volume: '',
     },
   ]);
-  // eslint-disable-next-line
-  const [conversionFactor, setConversionFactor] = useState(166.6);
+
+  const conversionFactor = 166.6; 
 
   // Converts from centimeters to inches
   const convertCmToInches = (cm) => (cm / 2.54).toFixed(2);
@@ -26,6 +26,15 @@ function CustomGrid() {
 
   // Converts from pounds to kilograms
   const convertLbsToKg = (lbs) => (lbs / 2.20462).toFixed(2);
+
+  const generateConversionSummary = () => {
+    return rows.map((row, index) => ({
+      lengthConversion: row.unit === 'cm' ? convertCmToInches(row.length) + ' in' : convertInchesToCm(row.length) + ' cm',
+      widthConversion: row.unit === 'cm' ? convertCmToInches(row.width) + ' in' : convertInchesToCm(row.width) + ' cm',
+      heightConversion: row.unit === 'cm' ? convertCmToInches(row.height) + ' in' : convertInchesToCm(row.height) + ' cm',
+      weightConversion: row.unit === 'cm' ? convertKgToLbs(row.weight) + ' lbs' : convertLbsToKg(row.weight) + ' kg',
+    }));
+  };
 
   const calculateVolume = (length, width, height, quantity, unit) => {
     let convertedLength = unit === 'in' ? convertInchesToCm(length) : length;
@@ -179,30 +188,7 @@ function CustomGrid() {
                 </select>
               </div>
               <div className="flex justify-between text-sm text-gray-600">
-                <span>
-                  L:{' '}
-                  {row.unit === 'cm'
-                    ? convertCmToInches(row.length) + ' in'
-                    : convertInchesToCm(row.length) + ' cm'}
-                </span>
-                <span>
-                  W:{' '}
-                  {row.unit === 'cm'
-                    ? convertCmToInches(row.width) + ' in'
-                    : convertInchesToCm(row.width) + ' cm'}
-                </span>
-                <span>
-                  H:{' '}
-                  {row.unit === 'cm'
-                    ? convertCmToInches(row.height) + ' in'
-                    : convertInchesToCm(row.height) + ' cm'}
-                </span>
-                <span>
-                  Weight:{' '}
-                  {row.unit === 'cm'
-                    ? convertKgToLbs(row.weight) + ' lbs'
-                    : convertLbsToKg(row.weight) + ' kg'}
-                </span>
+
               </div>
             </div>
             {/* Delete Icon */}
@@ -224,7 +210,17 @@ function CustomGrid() {
           Add Row
         </button>
 
+        <div className="conversion-summary mb-4">
+          <h2 className="text-lg mb-2">Conversion Summary</h2>
+          {generateConversionSummary().map((conversion, idx) => (
+            <div key={idx} className="text-sm mb-1">
+              <p>Row {idx + 1} - Length: {conversion.lengthConversion}, Width: {conversion.widthConversion}, Height: {conversion.heightConversion}, Weight: {conversion.weightConversion}</p>
+            </div>
+          ))}
+        </div>      
+
         <div className="totals">
+        <h2 className="text-lg mb-2">Totals</h2>
           <div>
             Total Weight: {calculateTotalWeight()} kg /{' '}
             {convertKgToLbs(calculateTotalWeight())} lbs
