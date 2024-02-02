@@ -13,36 +13,3 @@ code {
 }
 
 
-.custom-select {
-  display: block;
-  width: 100%;
-  padding: 0.5rem 1.5rem 0.5rem 1rem; /* Adjust the padding to suit your design */
-  font-size: 1rem; /* Adjust the font size as needed */
-  line-height: 1.5;
-  height: auto; /* This can be adjusted based on padding and font-size to control the height */
-  background-color: white;
-  -webkit-appearance: none; /* Removes default styling in WebKit browsers */
-  -moz-appearance: none; /* Removes default styling in Firefox */
-  appearance: none; /* Standard way to remove default arrow in some modern browsers */
-  position: relative;
-}
-
-/* For the custom arrow */
-.custom-select-wrapper {
-  width: 100%; /* or any other width */
-  position: relative;
-}
-
-.custom-select-wrapper:after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid #333; /* Arrow color can be adjusted */
-  pointer-events: none;
-}

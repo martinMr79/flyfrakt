@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Select from 'react-select';
+
 
 function CustomGrid() {
   const [rows, setRows] = useState([
@@ -12,6 +14,31 @@ function CustomGrid() {
       volume: '',
     },
   ]);
+
+  const unitOptions = [
+    { value: 'cm', label: 'cm' },
+    { value: 'in', label: 'in' }
+  ];
+
+  const reactSelectCustomStyles = {
+    control: (provided) => ({
+      ...provided,
+   
+      paddingLeft: '0.35rem',
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+   
+      paddingLeft: '0rem', 
+    }),
+   
+    option: (provided, state) => ({
+      ...provided,
+      paddingLeft: '1rem',
+    }),
+  };
+  
+  
 
   const conversionFactor = 166.6; 
 
@@ -176,16 +203,16 @@ function CustomGrid() {
                   }
                   className="py-2 px-4 w-1/3"
                 />
-  <div className="w-1/3 relative"> {/* Adjusted wrapper class */}
-    <select
-      value={row.unit}
-      onChange={(e) => handleInputChange(idx, 'unit', e.target.value)}
-      className="custom-select"
-    >
-      <option value="cm">cm</option>
-      <option value="in">in</option>
-    </select>
-  </div>  
+<div className="w-1/3 relative">
+<Select
+  className="custom-select"
+  value={unitOptions.find(option => option.value === row.unit)}
+  onChange={(selectedOption) => handleInputChange(idx, 'unit', selectedOption.value)}
+  options={unitOptions}
+  styles={reactSelectCustomStyles} // Apply the custom styles
+/>
+</div>
+
 
               </div>
               <div className="flex justify-between text-sm text-gray-600">
