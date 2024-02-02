@@ -15,29 +15,33 @@ function CustomGrid() {
     },
   ]);
 
-  const unitOptions = [
-    { value: 'cm', label: 'cm' },
-    { value: 'in', label: 'in' }
-  ];
-
   const reactSelectCustomStyles = {
-    control: (provided) => ({
+    control: (provided, state) => ({
       ...provided,
-   
+      border: state.isFocused ? '1px solid #ccc' : 'none',
+      borderRadius: '0', 
+      minHeight: '40px', 
+      height: '40px', 
       paddingLeft: '0.35rem',
+      // Optional: if you want to add a border on focus, adjust the borderColor above
+      // and add boxShadow here if needed for focus state:
+      // boxShadow: state.isFocused ? '0 0 0 1px blue' : 'none',
     }),
     singleValue: (provided) => ({
       ...provided,
-   
-      paddingLeft: '0rem', 
+      paddingLeft: '0rem',
     }),
-   
     option: (provided, state) => ({
       ...provided,
       paddingLeft: '1rem',
+      
     }),
   };
   
+  const unitOptions = [
+    { value: 'cm', label: 'cm' },
+    { value: 'in', label: 'in' },
+  ];
   
 
   const conversionFactor = 166.6; 
