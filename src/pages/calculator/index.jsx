@@ -176,16 +176,17 @@ function CustomGrid() {
                   }
                   className="py-2 px-4 w-1/3"
                 />
-                <select
-                  value={row.unit}
-                  onChange={(e) =>
-                    handleInputChange(idx, 'unit', e.target.value)
-                  }
-                  className="py-2 px-4 w-1/3"
-                >
-                  <option value="cm">cm</option>
-                  <option value="in">in</option>
-                </select>
+  <div className="w-1/3 relative"> {/* Adjusted wrapper class */}
+    <select
+      value={row.unit}
+      onChange={(e) => handleInputChange(idx, 'unit', e.target.value)}
+      className="custom-select"
+    >
+      <option value="cm">cm</option>
+      <option value="in">in</option>
+    </select>
+  </div>  
+
               </div>
               <div className="flex justify-between text-sm text-gray-600">
 
