@@ -46,16 +46,16 @@ function CustomGrid() {
 
   const conversionFactor = 166.6; 
 
-  // Converts from centimeters to inches
+  // centimeters to inches
   const convertCmToInches = (cm) => (cm / 2.54).toFixed(2);
 
-  // Converts from inches to centimeters
+  // inches to centimeters
   const convertInchesToCm = (inches) => (inches * 2.54).toFixed(2);
 
-  // Converts from kilograms to pounds
+  // kilograms to pounds
   const convertKgToLbs = (kg) => (kg * 2.20462).toFixed(2);
 
-  // Converts from pounds to kilograms
+  // pounds to kilograms
   const convertLbsToKg = (lbs) => (lbs / 2.20462).toFixed(2);
 
   const generateConversionSummary = () => {
@@ -148,7 +148,7 @@ function CustomGrid() {
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
-      <h1 className="text-center mb-5 text-lg">
+      <h1 className="text-center mb-8 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
         Airfreight Chargeable weight calculator
       </h1>
       <div className="bg-gray-200 w-full px-5 py-10">
@@ -213,7 +213,7 @@ function CustomGrid() {
   value={unitOptions.find(option => option.value === row.unit)}
   onChange={(selectedOption) => handleInputChange(idx, 'unit', selectedOption.value)}
   options={unitOptions}
-  styles={reactSelectCustomStyles} // Apply the custom styles
+  styles={reactSelectCustomStyles} 
 />
 </div>
 
@@ -267,8 +267,15 @@ function CustomGrid() {
           </div>
         </div>
       </div>
+    {/*  <footer className="w-full bg-gray-800 text-white text-center py-4 my-6">
+       <p>© 2024 Martin Mroz. All rights reserved.</p>
+      </footer>*/} 
     </div>
+
+    
+  
   );
+  
 }
 
 export default CustomGrid;
