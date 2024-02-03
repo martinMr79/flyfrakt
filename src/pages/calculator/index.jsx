@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Select from 'react-select';
+
 
 function CustomGrid() {
   const [rows, setRows] = useState([
@@ -13,18 +15,47 @@ function CustomGrid() {
     },
   ]);
 
+  const reactSelectCustomStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      border: state.isFocused ? '1px solid #ccc' : 'none',
+      borderRadius: '0', 
+      minHeight: '40px', 
+      height: '40px', 
+      paddingLeft: '0.35rem',
+      // Optional: if you want to add a border on focus, adjust the borderColor above
+      // and add boxShadow here if needed for focus state:
+      // boxShadow: state.isFocused ? '0 0 0 1px blue' : 'none',
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      paddingLeft: '0rem',
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      paddingLeft: '1rem',
+      
+    }),
+  };
+  
+  const unitOptions = [
+    { value: 'cm', label: 'cm' },
+    { value: 'in', label: 'in' },
+  ];
+  
+
   const conversionFactor = 166.6; 
 
-  // Converts from centimeters to inches
+  // centimeters to inches
   const convertCmToInches = (cm) => (cm / 2.54).toFixed(2);
 
-  // Converts from inches to centimeters
+  // inches to centimeters
   const convertInchesToCm = (inches) => (inches * 2.54).toFixed(2);
 
-  // Converts from kilograms to pounds
+  // kilograms to pounds
   const convertKgToLbs = (kg) => (kg * 2.20462).toFixed(2);
 
-  // Converts from pounds to kilograms
+  // pounds to kilograms
   const convertLbsToKg = (lbs) => (lbs / 2.20462).toFixed(2);
 
   const generateConversionSummary = () => {
@@ -117,7 +148,7 @@ function CustomGrid() {
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
-      <h1 className="text-center mb-5 text-lg">
+      <h1 className="text-center mb-8 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
         Airfreight Chargeable weight calculator
       </h1>
       <div className="bg-gray-200 w-full px-5 py-10">
@@ -176,16 +207,16 @@ function CustomGrid() {
                   }
                   className="py-2 px-4 w-1/3"
                 />
-  <div className="w-1/3 relative"> {/* Adjusted wrapper class */}
-    <select
-      value={row.unit}
-      onChange={(e) => handleInputChange(idx, 'unit', e.target.value)}
-      className="custom-select"
-    >
-      <option value="cm">cm</option>
-      <option value="in">in</option>
-    </select>
-  </div>  
+<div className="w-1/3 relative">
+<Select
+  className="custom-select"
+  value={unitOptions.find(option => option.value === row.unit)}
+  onChange={(selectedOption) => handleInputChange(idx, 'unit', selectedOption.value)}
+  options={unitOptions}
+  styles={reactSelectCustomStyles} 
+/>
+</div>
+
 
               </div>
               <div className="flex justify-between text-sm text-gray-600">
@@ -236,8 +267,15 @@ function CustomGrid() {
           </div>
         </div>
       </div>
+    {/*  <footer className="w-full bg-gray-800 text-white text-center py-4 my-6">
+       <p>© 2024 Martin Mroz. All rights reserved.</p>
+      </footer>*/} 
     </div>
+
+    
+  
   );
+  
 }
 
 export default CustomGrid;
