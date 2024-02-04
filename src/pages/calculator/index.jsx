@@ -108,9 +108,7 @@ function CustomGrid() {
   };
 
   const calculateTotalWeight = () => {
-    return rows
-      .reduce((total, row) => total + parseFloat(row.weight || 0), 0)
-      .toFixed(2);
+    return rows.reduce((total, row) => total + (parseFloat(row.weight || 0) * row.quantity), 0).toFixed(2);
   };
 
   const calculateTotalVolume = () => {
