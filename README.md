@@ -1,70 +1,33 @@
-# Getting Started with Create React App
+# Airfreight Chargeable Weight Calculator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The Airfreight Chargeable Weight Calculator is an intuitive web application designed to streamline the process of calculating the chargeable weight for airfreight shipments. This tool caters to logistics professionals, freight forwarders, and anyone involved in the shipping industry, offering a precise and efficient way to determine the weight and volume of shipments.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+* __Dynamic Row Addition:__ Users can dynamically add rows to input multiple items, allowing for the calculation of total and chargeable weights for an entire shipment.
+* __Unit Conversion:__ The calculator supports both metric (cm, kg) and imperial (in, lbs) units, with automatic conversion to display values in both systems for convenience.
+* __Interactive UI:__ A clean, user-friendly interface ensures that users can easily enter dimensions, weight, and quantity, and instantly view calculated volumes and chargeable weights.
+* __Responsive Design:__ Crafted to provide an optimal viewing experience across a wide range of devices, ensuring accessibility and usability on desktops, tablets, and smartphones.
 
-### `npm start`
+## Technology Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* __React:__ Utilizes React for its efficient, declarative, and flexible JavaScript library for building user interfaces.
+* __Tailwind CSS:__ Employs Tailwind CSS for styling, taking advantage of its utility-first CSS framework for rapidly building custom designs.
+* __React Select:__ Integrates React Select for enhanced select inputs, providing a richer dropdown experience with improved accessibility and styling options.
+  
+## Getting Started
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+To run the project locally, follow these steps:
 
-### `npm test`
+1. Clone the repository to your local machine.
+2. Navigate to the project directory and install dependencies with npm install.
+3. Run the application using npm start. The app will be available at http://localhost:3000.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Contribution
 
-### `npm run build`
+Contributions are welcome! If you have suggestions for improving the calculator or adding new features, feel free to fork the repository and submit a pull request.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## License
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed for personal and educational use only. Commercial use requires prior permission from the author. Please contact for licensing inquiries and permissions for commercial deployment.
+This tool aims to simplify the complexities of airfreight logistics, ensuring professionals have access to an efficient and accurate method for chargeable weight calculations.
