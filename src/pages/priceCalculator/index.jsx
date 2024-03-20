@@ -53,7 +53,7 @@ function ChargesCalculator() {
           />
         </div>
 
-        <div className="flex mb-2 space-x-2  mt-4">
+        <div className="flex mb-2 space-x-2  mt-2">
           <input
             type="number"
             name="pricePerKg"
@@ -81,7 +81,7 @@ function ChargesCalculator() {
         </div>
 
 
-        <div className="flex mb-2 space-x-2  mt-4">
+        <div className="flex mb-2 space-x-2  mt-2">
           <input
             type="number"
             name="pricePerKg"
@@ -108,6 +108,12 @@ function ChargesCalculator() {
           />
         </div>
 
+        <button
+          className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out mt-4"
+          >
+          Add field
+        </button>
+
         <h2 className="text-lg mt-8 font-bold">Total charges</h2>
         <div className="">Airfreight:</div>
         <div className="">FSC:</div>
@@ -116,7 +122,7 @@ function ChargesCalculator() {
         <div className="">Pick-up:</div>
         <div className="">Customs:</div>
         <h2 className="text-lg mt-8 font-bold">Total Price</h2>
-        {/* Display results or any other content here */}
+   
 
       </div>
 
