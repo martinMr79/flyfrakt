@@ -148,7 +148,7 @@ function CustomGrid() {
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
-      <h1 className="text-center mb-8 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
+      <h1 className="text-center mb-10 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
         Airfreight Chargeable weight calculator
       </h1>
       <div className="bg-gray-200 w-full px-5 py-10">
@@ -267,11 +267,14 @@ function CustomGrid() {
           </div>          
         </div>
         
-        <div className="navigation">
-          <Link to="/charges" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300">Go to Charges Calculator</Link>
-        </div>
+
 
       </div>
+        <div className="navigation pt-8">
+          <Link to="/charges" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300">Go to Charges Calculator</Link>
+        </div>  
+
+
     {/*  <footer className="w-full bg-gray-800 text-white text-center py-4 my-6">
        <p>© 2024 Martin Mroz. All rights reserved.</p>
       </footer>*/} 
