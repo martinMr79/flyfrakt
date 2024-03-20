@@ -52,15 +52,78 @@ function ChargesCalculator() {
             className="py-2 px-4 w-1/3"
           />
         </div>
-        <h2 className="text-lg mt-8 font-bold">Totals</h2>
-        <div className="">Airfreight</div>
-        <div className="">FSC</div>
-        <div className="">SSC</div>
-        {/* Display results or any other content here */}
-        <div className='pt-8'>
-          <Link to="/" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 transition duration-300">Go to Volume Weight Calculator</Link>
+
+        <div className="flex mb-2 space-x-2  mt-4">
+          <input
+            type="number"
+            name="pricePerKg"
+            placeholder="Airport Terminal"
+            value={charges.pricePerKg}
+            onChange={handleChange}
+            className="py-2 px-4 w-1/3"
+          />
+          <input
+            type="number"
+            name="fsc"
+            placeholder="Pick-up"
+            value={charges.fsc}
+            onChange={handleChange}
+            className="py-2 px-4 w-1/3"
+          />
+          <input
+            type="number"
+            name="ssc"
+            placeholder="Custom clearance"
+            value={charges.ssc}
+            onChange={handleChange}
+            className="py-2 px-4 w-1/3"
+          />
         </div>
+
+
+        <div className="flex mb-2 space-x-2  mt-4">
+          <input
+            type="number"
+            name="pricePerKg"
+            placeholder="Custom field"
+
+            onChange={handleChange}
+            className="py-2 px-4 w-1/3"
+          />
+          <input
+            type="number"
+            name="fsc"
+            placeholder="Custom field"
+
+            onChange={handleChange}
+            className="py-2 px-4 w-1/3"
+          />
+          <input
+            type="number"
+            name="ssc"
+            placeholder="Custom field"
+   
+            onChange={handleChange}
+            className="py-2 px-4 w-1/3"
+          />
+        </div>
+
+        <h2 className="text-lg mt-8 font-bold">Total charges</h2>
+        <div className="">Airfreight:</div>
+        <div className="">FSC:</div>
+        <div className="">SSC:</div>
+        <div className="">Airport Terminal:</div>
+        <div className="">Pick-up:</div>
+        <div className="">Customs:</div>
+        <h2 className="text-lg mt-8 font-bold">Total Price</h2>
+        {/* Display results or any other content here */}
+
       </div>
+
+      <div className='pt-8'>
+          <Link to="/" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 transition duration-300">Go to Volume Weight Calculator</Link>
+      </div>
+
     </div>
   );
 }
