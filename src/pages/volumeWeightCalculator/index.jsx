@@ -271,7 +271,7 @@ function CustomGrid() {
 
       </div>
         <div className="navigation pt-8">
-          <Link to="/charges" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300">Go to Charges Calculator</Link>
+          <Link to="/charges" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 font-bold">Go to Charges Calculator</Link>
         </div>  
 
 
