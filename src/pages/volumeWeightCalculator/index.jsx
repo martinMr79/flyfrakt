@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
+import { Link } from 'react-router-dom';
+
 
 
 function CustomGrid() {
@@ -262,8 +264,13 @@ function CustomGrid() {
           <div className="font-bold">
             Total Chargeable Weight: {calculateChargeableWeight()} kg /{' '}
             {convertKgToLbs(calculateChargeableWeight())} lbs
-          </div>
+          </div>          
         </div>
+        
+        <div className="navigation">
+          <Link to="/charges" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300">Go to Charges Calculator</Link>
+        </div>
+
       </div>
     {/*  <footer className="w-full bg-gray-800 text-white text-center py-4 my-6">
        <p>© 2024 Martin Mroz. All rights reserved.</p>

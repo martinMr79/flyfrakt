@@ -1,11 +1,17 @@
-import CustomGrid from "./pages/calculator";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import CustomGrid from './pages/volumeWeightCalculator/index'; 
+import ChargesCalculator from './pages/priceCalculator/index'; 
 
 function App() {
   return (
-    <div>
-      <CustomGrid></CustomGrid>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<CustomGrid />} />
+        <Route path="/charges" element={<ChargesCalculator />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
+
 
 export default App;
