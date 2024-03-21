@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 
 function ChargesCalculator() {
   // Access the total chargeable weight from the Redux store
-  const totalChargeableWeight = useSelector(
-    (state) => state.volumeWeightCalculator.totalChargeableWeight
-  );
-  console.log(totalChargeableWeight);
+  const chargeableWeight = useSelector((state) => state.volumeWeightCalculator.chargeableWeight);
+  const totalWeight = useSelector(state => state.volumeWeightCalculator.totalWeight);
+  const totalCBM = useSelector(state => state.volumeWeightCalculator.totalCBM);
+
 
   const [charges, setCharges] = useState({
     pricePerKg: '',
@@ -28,9 +28,9 @@ function ChargesCalculator() {
   };
 
   const calculateTotalCharges = () => {
-    const airfreight = Number(charges.pricePerKg) * totalChargeableWeight || 0;
-    const fuelSurcharge = Number(charges.fsc) * totalChargeableWeight || 0;
-    const securitySurcharge = Number(charges.ssc) * totalChargeableWeight || 0;
+    const airfreight = Number(charges.pricePerKg) * chargeableWeight || 0;
+    const fuelSurcharge = Number(charges.fsc) * chargeableWeight || 0;
+    const securitySurcharge = Number(charges.ssc) * chargeableWeight || 0;
     const airportTerminal = Number(charges.airportTerminal) || 0;
     const pickUp = Number(charges.pickUp) || 0;
     const customClearance = Number(charges.customClearance) || 0;
@@ -67,6 +67,11 @@ function ChargesCalculator() {
       <h1 className="text-center mb-10 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
         Airfreight Charges Calculator
       </h1>
+      <div className="totals-display mb-4">
+      <p>CBM: {totalCBM} m³</p>
+      <p>Weight: {totalWeight} kg</p>
+      <p>Chargeable Weight: {chargeableWeight} kg</p>
+    </div>
       <div className="bg-gray-200 w-full px-5 py-10">
         <div className="flex mb-2 space-x-2  mt-4">
           <input
@@ -135,16 +140,16 @@ function ChargesCalculator() {
         <div>
           Airfreight:{' '}
           {(
-            parseFloat(charges.pricePerKg) * totalChargeableWeight || 0
+            parseFloat(charges.pricePerKg) * chargeableWeight || 0
           ).toFixed(2)}{' '}
         </div>
         <div>
           FSC:{' '}
-          {(parseFloat(charges.fsc) * totalChargeableWeight || 0).toFixed(2)}
+          {(parseFloat(charges.fsc) * chargeableWeight || 0).toFixed(2)}
         </div>
         <div>
           SSC:{' '}
-          {(parseFloat(charges.ssc) * totalChargeableWeight || 0).toFixed(2)}
+          {(parseFloat(charges.ssc) * chargeableWeight || 0).toFixed(2)}
         </div>
         <h2 className="text-lg mt-8 font-bold">
           Total Price: {calculateTotalCharges()}
