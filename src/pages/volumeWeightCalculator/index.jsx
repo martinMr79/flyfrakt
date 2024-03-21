@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setTotalChargeableWeight } from '../../slices/volumeWeightCalculator';
+import { setChargeableWeight, setTotalCBM, setTotalWeight } from '../../slices/volumeWeightCalculator';
 
 function CustomGrid() {
  
@@ -173,13 +173,17 @@ function CustomGrid() {
     const chargeableWeight = (totalVolume * conversionFactor).toFixed(2);
 
     // Dispatch the action to update the total chargeable weight in the Redux store
-    dispatch(setTotalChargeableWeight(parseFloat(chargeableWeight)));
+    dispatch(setChargeableWeight(parseFloat(chargeableWeight)));
   };
 
   useEffect(() => {
-    const totalChargeableWeight = calculateChargeableWeight();
-    dispatch(setTotalChargeableWeight(totalChargeableWeight));
-  }, [calculateChargeableWeight, dispatch]);
+    const totalVolume = calculateTotalVolume(); // Ensure this function calculates total CBM correctly
+    const totalWeight = calculateTotalWeight(); // Ensure this function calculates total weight correctly
+    const chargeableWeight = calculateChargeableWeight(totalVolume); // Adjusted to accept totalVolume as paramete
+    dispatch(setTotalCBM(totalVolume));
+    dispatch(setTotalWeight(totalWeight));
+    dispatch(setChargeableWeight(chargeableWeight));
+  }, [rows, dispatch, calculateTotalVolume, calculateTotalWeight, calculateChargeableWeight]);
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
