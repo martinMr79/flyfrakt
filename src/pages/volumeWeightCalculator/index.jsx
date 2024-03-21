@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -135,16 +135,16 @@ function CustomGrid() {
       .toFixed(2);
   };
 
-  const calculateTotalVolume = () => {
-    return rows
-      .reduce((total, row) => total + parseFloat(row.volume || 0), 0)
-      .toFixed(3);
-  };
+  const calculateTotalVolume = useCallback(() => {
+    return rows.reduce((total, row) => total + parseFloat(row.volume || 0), 0).toFixed(3);
+  }, [rows]);
+  
 
-  const calculateChargeableWeight = () => {
+  const calculateChargeableWeight = useCallback(() => {
     const totalVolume = calculateTotalVolume();
     return (totalVolume * conversionFactor).toFixed(2);
-  };
+  }, [calculateTotalVolume, conversionFactor]);
+  
 
   const addRow = () => {
     setRows([
@@ -177,10 +177,9 @@ function CustomGrid() {
   };
 
   useEffect(() => {
-    // Calculate total chargeable weight and update Redux
     const totalChargeableWeight = calculateChargeableWeight();
     dispatch(setTotalChargeableWeight(totalChargeableWeight));
-  }, [rows, dispatch]);
+  }, [calculateChargeableWeight, dispatch]);
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
