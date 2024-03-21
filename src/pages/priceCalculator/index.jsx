@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 function ChargesCalculator() {
-  // State for storing the inputs
+  // Access the total chargeable weight from the Redux store
+  const totalChargeableWeight = useSelector(
+    (state) => state.volumeWeightCalculator.totalChargeableWeight
+  );
+  console.log(totalChargeableWeight);
+
   const [charges, setCharges] = useState({
     pricePerKg: '',
-    fsc: '', // Fuel Surcharge
-    ssc: '', // Security Surcharge
+    fsc: '',
+    ssc: '',
     airportTerminal: '',
     pickUp: '',
     customClearance: '',
     customCharges: {},
   });
 
-  // Handle change in the inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCharges((prevCharges) => ({
@@ -22,19 +27,48 @@ function ChargesCalculator() {
     }));
   };
 
-    // Function to dynamically add a custom charge field
-    const addCustomField = () => {
-      // Implementation for adding custom field
-    };
+  const calculateTotalCharges = () => {
+    const airfreight = Number(charges.pricePerKg) * totalChargeableWeight || 0;
+    const fuelSurcharge = Number(charges.fsc) * totalChargeableWeight || 0;
+    const securitySurcharge = Number(charges.ssc) * totalChargeableWeight || 0;
+    const airportTerminal = Number(charges.airportTerminal) || 0;
+    const pickUp = Number(charges.pickUp) || 0;
+    const customClearance = Number(charges.customClearance) || 0;
 
+    // Add additional logic here for custom charges if necessary
+
+    const totalCustomCharges = Object.values(charges.customCharges).reduce(
+      (total, value) => total + Number(value) || 0,
+      0
+    );
+
+    const total =
+      airfreight +
+      fuelSurcharge +
+      securitySurcharge +
+      airportTerminal +
+      pickUp +
+      customClearance +
+      totalCustomCharges;
+    return total.toFixed(2);
+  };
+
+  const addCustomField = () => {
+    setCharges((prevCharges) => {
+      const newCustomCharge = { name: '', value: '' }; // Define the structure of your custom charge
+      return {
+        ...prevCharges,
+        customCharges: [...prevCharges.customCharges, newCustomCharge],
+      };
+    });
+  };
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
       <h1 className="text-center mb-10 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
         Airfreight Charges Calculator
       </h1>
       <div className="bg-gray-200 w-full px-5 py-10">
-        
-      <div className="flex mb-2 space-x-2  mt-4">
+        <div className="flex mb-2 space-x-2  mt-4">
           <input
             type="number"
             name="pricePerKg"
@@ -97,26 +131,36 @@ function ChargesCalculator() {
           Add Custom Field
         </button>
 
-
         <h2 className="text-lg mt-8 font-bold">Total charges</h2>
-        <div className="">Airfreight:</div>
-        <div className="">FSC:</div>
-        <div className="">SSC:</div>
-        <div className="">Airport Terminal:</div>
-        <div className="">Pick-up:</div>
-        <div className="">Customs:</div>
-        <h2 className="text-lg mt-8 font-bold">Total Price</h2>
-   
-
+        <div>
+          Airfreight:{' '}
+          {(
+            parseFloat(charges.pricePerKg) * totalChargeableWeight || 0
+          ).toFixed(2)}{' '}
+        </div>
+        <div>
+          FSC:{' '}
+          {(parseFloat(charges.fsc) * totalChargeableWeight || 0).toFixed(2)}
+        </div>
+        <div>
+          SSC:{' '}
+          {(parseFloat(charges.ssc) * totalChargeableWeight || 0).toFixed(2)}
+        </div>
+        <h2 className="text-lg mt-8 font-bold">
+          Total Price: {calculateTotalCharges()}
+        </h2>
       </div>
 
-      <div className='pt-8'>
-          <Link to="/" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 font-bold">Go to Volume Weight Calculator</Link>
+      <div className="pt-8">
+        <Link
+          to="/"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 font-bold"
+        >
+          Go to Volume Weight Calculator
+        </Link>
       </div>
-
     </div>
   );
 }
 
 export default ChargesCalculator;
-

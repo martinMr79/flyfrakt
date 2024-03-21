@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
-
-
+import { useDispatch } from 'react-redux';
+import { setTotalChargeableWeight } from '../../slices/volumeWeightCalculator';
 
 function CustomGrid() {
+ 
   const [rows, setRows] = useState([
     {
       length: '',
@@ -17,13 +18,18 @@ function CustomGrid() {
     },
   ]);
 
+  const dispatch = useDispatch();
+
+
+
+
   const reactSelectCustomStyles = {
     control: (provided, state) => ({
       ...provided,
       border: state.isFocused ? '1px solid #ccc' : 'none',
-      borderRadius: '0', 
-      minHeight: '40px', 
-      height: '40px', 
+      borderRadius: '0',
+      minHeight: '40px',
+      height: '40px',
       paddingLeft: '0.35rem',
       // Optional: if you want to add a border on focus, adjust the borderColor above
       // and add boxShadow here if needed for focus state:
@@ -36,17 +42,15 @@ function CustomGrid() {
     option: (provided, state) => ({
       ...provided,
       paddingLeft: '1rem',
-      
     }),
   };
-  
+
   const unitOptions = [
     { value: 'cm', label: 'cm' },
     { value: 'in', label: 'in' },
   ];
-  
 
-  const conversionFactor = 166.6; 
+  const conversionFactor = 166.6;
 
   // centimeters to inches
   const convertCmToInches = (cm) => (cm / 2.54).toFixed(2);
@@ -62,10 +66,22 @@ function CustomGrid() {
 
   const generateConversionSummary = () => {
     return rows.map((row, index) => ({
-      lengthConversion: row.unit === 'cm' ? convertCmToInches(row.length) + ' in' : convertInchesToCm(row.length) + ' cm',
-      widthConversion: row.unit === 'cm' ? convertCmToInches(row.width) + ' in' : convertInchesToCm(row.width) + ' cm',
-      heightConversion: row.unit === 'cm' ? convertCmToInches(row.height) + ' in' : convertInchesToCm(row.height) + ' cm',
-      weightConversion: row.unit === 'cm' ? convertKgToLbs(row.weight) + ' lbs' : convertLbsToKg(row.weight) + ' kg',
+      lengthConversion:
+        row.unit === 'cm'
+          ? convertCmToInches(row.length) + ' in'
+          : convertInchesToCm(row.length) + ' cm',
+      widthConversion:
+        row.unit === 'cm'
+          ? convertCmToInches(row.width) + ' in'
+          : convertInchesToCm(row.width) + ' cm',
+      heightConversion:
+        row.unit === 'cm'
+          ? convertCmToInches(row.height) + ' in'
+          : convertInchesToCm(row.height) + ' cm',
+      weightConversion:
+        row.unit === 'cm'
+          ? convertKgToLbs(row.weight) + ' lbs'
+          : convertLbsToKg(row.weight) + ' kg',
     }));
   };
 
@@ -86,7 +102,6 @@ function CustomGrid() {
       rows.map((row, idx) => {
         if (idx === index) {
           const updatedRow = { ...row, [field]: newValue };
-          // Calculate volume only if the row that changed is the one being updated
           if (
             field === 'length' ||
             field === 'width' ||
@@ -105,12 +120,19 @@ function CustomGrid() {
           return updatedRow;
         }
         return row;
-      })
+      }),
+      // Once state is updated, call this to update Redux store
+      () => calculateChargeableWeightAndUpdateRedux()
     );
   };
 
   const calculateTotalWeight = () => {
-    return rows.reduce((total, row) => total + (parseFloat(row.weight || 0) * row.quantity), 0).toFixed(2);
+    return rows
+      .reduce(
+        (total, row) => total + parseFloat(row.weight || 0) * row.quantity,
+        0
+      )
+      .toFixed(2);
   };
 
   const calculateTotalVolume = () => {
@@ -145,6 +167,20 @@ function CustomGrid() {
 
   const convertCubicMetersToCubicFeet = (cubicMeters) =>
     (cubicMeters * 35.3147).toFixed(3);
+
+  const calculateChargeableWeightAndUpdateRedux = () => {
+    const totalVolume = calculateTotalVolume();
+    const chargeableWeight = (totalVolume * conversionFactor).toFixed(2);
+
+    // Dispatch the action to update the total chargeable weight in the Redux store
+    dispatch(setTotalChargeableWeight(parseFloat(chargeableWeight)));
+  };
+
+  useEffect(() => {
+    // Calculate total chargeable weight and update Redux
+    const totalChargeableWeight = calculateChargeableWeight();
+    dispatch(setTotalChargeableWeight(totalChargeableWeight));
+  }, [rows, dispatch]);
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
@@ -207,21 +243,21 @@ function CustomGrid() {
                   }
                   className="py-2 px-4 w-1/3"
                 />
-<div className="w-1/3 relative">
-<Select
-  className="custom-select"
-  value={unitOptions.find(option => option.value === row.unit)}
-  onChange={(selectedOption) => handleInputChange(idx, 'unit', selectedOption.value)}
-  options={unitOptions}
-  styles={reactSelectCustomStyles} 
-/>
-</div>
-
-
+                <div className="w-1/3 relative">
+                  <Select
+                    className="custom-select"
+                    value={unitOptions.find(
+                      (option) => option.value === row.unit
+                    )}
+                    onChange={(selectedOption) =>
+                      handleInputChange(idx, 'unit', selectedOption.value)
+                    }
+                    options={unitOptions}
+                    styles={reactSelectCustomStyles}
+                  />
+                </div>
               </div>
-              <div className="flex justify-between text-sm text-gray-600">
-
-              </div>
+              <div className="flex justify-between text-sm text-gray-600"></div>
             </div>
             {/* Delete Icon */}
             {rows.length > 1 && (
@@ -246,13 +282,18 @@ function CustomGrid() {
           <h2 className="text-lg mb-2">Conversion Summary</h2>
           {generateConversionSummary().map((conversion, idx) => (
             <div key={idx} className="text-sm mb-1">
-              <p>Row {idx + 1} - Length: {conversion.lengthConversion}, Width: {conversion.widthConversion}, Height: {conversion.heightConversion}, Weight: {conversion.weightConversion}</p>
+              <p>
+                Row {idx + 1} - Length: {conversion.lengthConversion}, Width:{' '}
+                {conversion.widthConversion}, Height:{' '}
+                {conversion.heightConversion}, Weight:{' '}
+                {conversion.weightConversion}
+              </p>
             </div>
           ))}
-        </div>      
+        </div>
 
         <div className="totals">
-        <h2 className="text-lg mb-2">Totals</h2>
+          <h2 className="text-lg mb-2">Totals</h2>
           <div>
             Total Weight: {calculateTotalWeight()} kg /{' '}
             {convertKgToLbs(calculateTotalWeight())} lbs
@@ -264,26 +305,23 @@ function CustomGrid() {
           <div className="font-bold">
             Total Chargeable Weight: {calculateChargeableWeight()} kg /{' '}
             {convertKgToLbs(calculateChargeableWeight())} lbs
-          </div>          
+          </div>
         </div>
-        
-
-
       </div>
-        <div className="navigation pt-8">
-          <Link to="/charges" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 font-bold">Go to Charges Calculator</Link>
-        </div>  
+      <div className="navigation pt-8">
+        <Link
+          to="/charges"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 font-bold"
+        >
+          Go to Charges Calculator
+        </Link>
+      </div>
 
-
-    {/*  <footer className="w-full bg-gray-800 text-white text-center py-4 my-6">
+      {/*  <footer className="w-full bg-gray-800 text-white text-center py-4 my-6">
        <p>© 2024 Martin Mroz. All rights reserved.</p>
-      </footer>*/} 
+      </footer>*/}
     </div>
-
-    
-  
   );
-  
 }
 
 export default CustomGrid;
