@@ -16,7 +16,7 @@ function ChargesCalculator() {
     airportTerminal: '',
     pickUp: '',
     customClearance: '',
-    customCharges: {},
+    customCharges: [],
   });
 
   const handleChange = (e) => {
@@ -24,6 +24,19 @@ function ChargesCalculator() {
     setCharges((prevCharges) => ({
       ...prevCharges,
       [name]: value,
+    }));
+  };
+
+  const handleCustomChargeChange = (index, value) => {
+    const updatedCustomCharges = charges.customCharges.map((charge, i) => {
+      if (i === index) {
+        return { ...charge, value };
+      }
+      return charge;
+    });
+    setCharges((prevCharges) => ({
+      ...prevCharges,
+      customCharges: updatedCustomCharges,
     }));
   };
 
@@ -35,12 +48,11 @@ function ChargesCalculator() {
     const pickUp = Number(charges.pickUp) || 0;
     const customClearance = Number(charges.customClearance) || 0;
 
-    // Add additional logic here for custom charges if necessary
-
-    const totalCustomCharges = Object.values(charges.customCharges).reduce(
-      (total, value) => total + Number(value) || 0,
-      0
+  const totalCustomCharges = charges.customCharges.reduce(
+    (total, charge) => total + Number(charge.value) || 0,
+    0
     );
+
 
     const total =
       airfreight +
@@ -126,6 +138,18 @@ function ChargesCalculator() {
             className="py-2 px-4 w-1/3"
           />
         </div>
+        {charges.customCharges.map((charge, index) => (
+        <input
+          key={index}
+          type="number"
+          placeholder="Custom charge"
+          value={charge.value}
+          onChange={(e) => handleCustomChargeChange(index, e.target.value)}
+          className="py-2 px-4 w-1/3"
+        />
+      ))}
+
+
 
         {/* Implementation for dynamic custom charges fields */}
 
