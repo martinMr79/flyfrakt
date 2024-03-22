@@ -74,6 +74,15 @@ function ChargesCalculator() {
       };
     });
   };
+
+  const getCustomChargeRows = () => {
+    const rows = [];
+    for (let i = 0; i < charges.customCharges.length; i += 3) {
+      rows.push(charges.customCharges.slice(i, i + 3));
+    }
+    return rows;
+  };
+
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
       <h1 className="text-center mb-10 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
@@ -138,24 +147,24 @@ function ChargesCalculator() {
             className="py-2 px-4 w-1/3"
           />
         </div>
-        {charges.customCharges.map((charge, index) => (
-        <input
-          key={index}
-          type="number"
-          placeholder="Custom charge"
-          value={charge.value}
-          onChange={(e) => handleCustomChargeChange(index, e.target.value)}
-          className="py-2 px-4 w-1/3"
-        />
-      ))}
-
-
-
-        {/* Implementation for dynamic custom charges fields */}
-
+        {getCustomChargeRows().map((row, rowIndex) => (
+          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2">
+            {row.map((charge, index) => (
+              <input
+                key={rowIndex * 3 + index}
+                type="number"
+                placeholder="Custom charge"
+                value={charge.value}
+                onChange={(e) => handleCustomChargeChange(rowIndex * 3 + index, e.target.value)}
+                className="py-2 px-4 w-1/3"
+              />
+            ))}
+          </div>
+        ))}
+        
         <button
-          className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out mt-4"
           onClick={addCustomField}
+          className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out mt-4"
         >
           Add Custom Field
         </button>
