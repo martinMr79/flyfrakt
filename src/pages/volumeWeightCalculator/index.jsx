@@ -126,14 +126,14 @@ function CustomGrid() {
     );
   };
 
-  const calculateTotalWeight = () => {
+  const calculateTotalWeight = useCallback(() => {
     return rows
       .reduce(
         (total, row) => total + parseFloat(row.weight || 0) * row.quantity,
         0
       )
       .toFixed(2);
-  };
+  }, [rows])
 
   const calculateTotalVolume = useCallback(() => {
     return rows.reduce((total, row) => total + parseFloat(row.volume || 0), 0).toFixed(3);
