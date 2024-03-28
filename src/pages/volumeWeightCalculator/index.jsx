@@ -1,28 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setChargeableWeight, setTotalCBM, setTotalWeight } from '../../slices/volumeWeightCalculator';
+import { useSelector, useDispatch } from 'react-redux';
+// eslint-disable-next-line no-unused-vars
+import { setChargeableWeight, setTotalCBM, setTotalWeight, setRows } from '../../slices/volumeWeightCalculator';
 
 function CustomGrid() {
  
-  const [rows, setRows] = useState([
-    {
-      length: '',
-      width: '',
-      height: '',
-      weight: '',
-      quantity: 1,
-      unit: 'cm',
-      volume: '',
-    },
-  ]);
-
   const dispatch = useDispatch();
+  const rowsFromRedux = useSelector(state => state.volumeWeightCalculator.rows);
+  const [localRows, setLocalRows] = useState(rowsFromRedux || []);
 
 
+  
+
+  useEffect(() => {
+    setRows(rowsFromRedux);
+    console.log(setRows)
+  }, [rowsFromRedux]);
 
 
+  console.log(setRows)
   const reactSelectCustomStyles = {
     control: (provided, state) => ({
       ...provided,
@@ -65,7 +63,7 @@ function CustomGrid() {
   const convertLbsToKg = (lbs) => (lbs / 2.20462).toFixed(2);
 
   const generateConversionSummary = () => {
-    return rows.map((row, index) => ({
+    return localRows.map((row, index) => ({
       lengthConversion:
         row.unit === 'cm'
           ? convertCmToInches(row.length) + ' in'
@@ -97,47 +95,44 @@ function CustomGrid() {
 
   const handleInputChange = (index, field, value) => {
     const newValue = field !== 'unit' && value < 0 ? 0 : value;
-
-    setRows(
-      rows.map((row, idx) => {
-        if (idx === index) {
-          const updatedRow = { ...row, [field]: newValue };
-          if (
-            field === 'length' ||
-            field === 'width' ||
-            field === 'height' ||
-            field === 'quantity' ||
-            field === 'unit'
-          ) {
-            updatedRow.volume = calculateVolume(
-              updatedRow.length,
-              updatedRow.width,
-              updatedRow.height,
-              updatedRow.quantity,
-              updatedRow.unit
-            );
+  
+    const updatedRows = localRows.map((row, idx) =>
+      idx === index
+        ? {
+            ...row,
+            [field]: newValue,
+            volume: field === 'length' || field === 'width' || field === 'height' || field === 'quantity' || field === 'unit'
+              ? calculateVolume(
+                  row.length,
+                  row.width,
+                  row.height,
+                  row.quantity,
+                  row.unit
+                )
+              : row.volume,
           }
-          return updatedRow;
-        }
-        return row;
-      }),
-      // Once state is updated, call this to update Redux store
-      () => calculateChargeableWeightAndUpdateRedux()
+        : row
     );
+  
+    setLocalRows(updatedRows);
+    dispatch(setRows(localRows));
+    calculateChargeableWeightAndUpdateRedux();
   };
 
+
+
   const calculateTotalWeight = useCallback(() => {
-    return rows
+    return localRows
       .reduce(
         (total, row) => total + parseFloat(row.weight || 0) * row.quantity,
         0
       )
       .toFixed(2);
-  }, [rows])
+  }, [localRows])
 
   const calculateTotalVolume = useCallback(() => {
-    return rows.reduce((total, row) => total + parseFloat(row.volume || 0), 0).toFixed(3);
-  }, [rows]);
+    return localRows.reduce((total, row) => total + parseFloat(row.volume || 0), 0).toFixed(3);
+  }, [localRows]);
   
 
   const calculateChargeableWeight = useCallback(() => {
@@ -147,22 +142,43 @@ function CustomGrid() {
   
 
   const addRow = () => {
-    setRows([
-      ...rows,
-      {
-        length: '',
-        width: '',
-        height: '',
-        weight: '',
-        quantity: 1,
-        unit: 'cm',
-        volume: '',
-      },
-    ]);
+    const newRow = {
+      length: '',
+      width: '',
+      height: '',
+      weight: '',
+      quantity: 1,
+      unit: 'cm',
+      volume: '',
+    };
+    const newRows = [...localRows, newRow];
+    setRows(newRows); // Update local state
+    console.log('Dispatching setRows with payload:', newRows);
+    dispatch(setRows(newRows)); // Dispatch action to update Redux store
   };
 
-  const removeRow = (index) => {
-    setRows(rows.filter((_, idx) => idx !== index));
+  useEffect(() => {
+    setRows(rowsFromRedux);
+  }, [rowsFromRedux]);
+  
+  
+
+const removeRow = (index) => {
+  const newRows = localRows.filter((_, idx) => idx !== index);
+  setRows(newRows); // Update local state
+  console.log('Dispatching setRows with payload:', newRows);
+  dispatch(setRows(newRows)); // Update Redux store
+};
+
+  // Temporary function for testing
+  const dispatchTestRows = () => {
+    const testRows = [
+      { length: '10', width: '20', height: '30', weight: '40', quantity: 1, unit: 'cm', volume: '0.006' },
+      // Add more test rows as needed
+    ];
+
+    console.log('Dispatching setRows with test payload:', testRows);
+    dispatch(setRows(testRows));
   };
 
   const convertCubicMetersToCubicFeet = (cubicMeters) =>
@@ -183,7 +199,7 @@ function CustomGrid() {
     dispatch(setTotalCBM(totalVolume));
     dispatch(setTotalWeight(totalWeight));
     dispatch(setChargeableWeight(chargeableWeight));
-  }, [rows, dispatch, calculateTotalVolume, calculateTotalWeight, calculateChargeableWeight]);
+  }, [localRows, dispatch, calculateTotalVolume, calculateTotalWeight, calculateChargeableWeight]);
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
@@ -191,7 +207,7 @@ function CustomGrid() {
         Airfreight Chargeable weight calculator
       </h1>
       <div className="bg-gray-200 w-full px-5 py-10">
-        {rows.map((row, idx) => (
+        {localRows.map((row, idx) => (
           <div key={idx} className="flex items-center mb-3">
             <div className="flex flex-col flex-grow mr-2">
               <div className="flex mb-2 space-x-2  mt-4">
@@ -263,7 +279,7 @@ function CustomGrid() {
               <div className="flex justify-between text-sm text-gray-600"></div>
             </div>
             {/* Delete Icon */}
-            {rows.length > 1 && (
+            {localRows.length > 1 && (
               <img
                 src="/icons/delete_icon.svg"
                 alt="Delete"
@@ -273,6 +289,9 @@ function CustomGrid() {
             )}
           </div>
         ))}
+
+              {/* Temporary button for dispatching test rows */}
+        <button onClick={dispatchTestRows}>Dispatch Test Rows</button>      
 
         <button
           onClick={addRow}
