@@ -170,16 +170,6 @@ const removeRow = (index) => {
   dispatch(setRows(newRows)); // Update Redux store
 };
 
-  // Temporary function for testing
-  const dispatchTestRows = () => {
-    const testRows = [
-      { length: '10', width: '20', height: '30', weight: '40', quantity: 1, unit: 'cm', volume: '0.006' },
-      // Add more test rows as needed
-    ];
-
-    console.log('Dispatching setRows with test payload:', testRows);
-    dispatch(setRows(testRows));
-  };
 
   const convertCubicMetersToCubicFeet = (cubicMeters) =>
     (cubicMeters * 35.3147).toFixed(3);
@@ -289,9 +279,6 @@ const removeRow = (index) => {
             )}
           </div>
         ))}
-
-              {/* Temporary button for dispatching test rows */}
-        <button onClick={dispatchTestRows}>Dispatch Test Rows</button>      
 
         <button
           onClick={addRow}
