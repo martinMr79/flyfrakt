@@ -15,12 +15,11 @@ function CustomGrid() {
   
 
   useEffect(() => {
-    setRows(rowsFromRedux);
-    console.log(setRows)
+    setLocalRows(rowsFromRedux);
   }, [rowsFromRedux]);
 
 
-  console.log(setRows)
+  
   const reactSelectCustomStyles = {
     control: (provided, state) => ({
       ...provided,
