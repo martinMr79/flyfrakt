@@ -16,10 +16,11 @@ function CustomGrid() {
 
   useEffect(() => {
     setLocalRows(rowsFromRedux);
+    console.log(setRows)
   }, [rowsFromRedux]);
 
 
-  
+  console.log(setRows)
   const reactSelectCustomStyles = {
     control: (provided, state) => ({
       ...provided,
@@ -93,28 +94,30 @@ function CustomGrid() {
   };
 
   const handleInputChange = (index, field, value) => {
-    const newValue = field !== 'unit' && value < 0 ? 0 : value;
+    // Convert input value to number for numeric fields; keep it as is for 'unit'
+    const isNumericField = ['length', 'width', 'height', 'weight', 'quantity'].includes(field);
+    const newValue = isNumericField ? parseFloat(value) || 0 : value;
   
+    // Map over rows to update the changed row and optionally recalculate its volume
     const updatedRows = localRows.map((row, idx) =>
-      idx === index
-        ? {
-            ...row,
-            [field]: newValue,
-            volume: field === 'length' || field === 'width' || field === 'height' || field === 'quantity' || field === 'unit'
-              ? calculateVolume(
-                  row.length,
-                  row.width,
-                  row.height,
-                  row.quantity,
-                  row.unit
-                )
-              : row.volume,
-          }
-        : row
+      idx === index ? {
+        ...row,
+        [field]: newValue,
+        // Recalculate volume if any of the dimensions, quantity, or unit changes
+        volume: ['length', 'width', 'height', 'quantity', 'unit'].includes(field)
+          ? calculateVolume(
+              field === 'length' ? newValue : row.length,
+              field === 'width' ? newValue : row.width,
+              field === 'height' ? newValue : row.height,
+              field === 'quantity' ? newValue : row.quantity,
+              field === 'unit' ? value : row.unit // 'unit' is not numeric, don't use newValue
+            )
+          : row.volume
+      } : row
     );
   
     setLocalRows(updatedRows);
-    dispatch(setRows(localRows));
+    dispatch(setRows(updatedRows)); 
     calculateChargeableWeightAndUpdateRedux();
   };
 
@@ -278,6 +281,7 @@ const removeRow = (index) => {
             )}
           </div>
         ))}
+
 
         <button
           onClick={addRow}
