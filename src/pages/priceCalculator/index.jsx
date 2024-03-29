@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setCharges } from '../../slices/volumeWeightCalculatorSlice'
 
 function ChargesCalculator() {
-  // Access the total chargeable weight from the Redux store
+  const dispatch = useDispatch();
   const chargeableWeight = useSelector((state) => state.volumeWeightCalculator.chargeableWeight);
   const totalWeight = useSelector(state => state.volumeWeightCalculator.totalWeight);
   const totalCBM = useSelector(state => state.volumeWeightCalculator.totalCBM);
+  // Use the charges state from Redux
+  const chargesRedux = useSelector(state => state.volumeWeightCalculator.charges);
 
-
-  const [charges, setCharges] = useState({
+  // Initialize component state with Redux state
+  const [charges, setLocalCharges] = useState(chargesRedux || {
     pricePerKg: '',
     fsc: '',
     ssc: '',
@@ -19,12 +23,12 @@ function ChargesCalculator() {
     customCharges: [],
   });
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCharges((prevCharges) => ({
-      ...prevCharges,
-      [name]: value,
-    }));
+    const updatedCharges = {...charges, [name]: value};
+    setLocalCharges(updatedCharges);
+    dispatch(setCharges(updatedCharges)); // Update Redux state
   };
 
   const handleCustomChargeChange = (index, value) => {

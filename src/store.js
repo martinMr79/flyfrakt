@@ -5,7 +5,7 @@ import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
-import volumeWeightCalculatorReducer from './slices/volumeWeightCalculator';
+import volumeWeightCalculatorReducer from './slices/volumeWeightCalculatorSlice';
 
 const persistConfig = {
   key: 'root',
