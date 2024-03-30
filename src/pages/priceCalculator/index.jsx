@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
-import {
-  setCharges,
-} from '../../slices/volumeWeightCalculatorSlice';
+import { setCharges } from '../../slices/volumeWeightCalculatorSlice';
 
 const reactSelectCustomStyles = {
   control: (provided, state) => ({
@@ -25,7 +23,6 @@ const reactSelectCustomStyles = {
   }),
 };
 
-
 function ChargesCalculator() {
   const dispatch = useDispatch();
   const {
@@ -35,7 +32,6 @@ function ChargesCalculator() {
     charges: chargesRedux,
     calculationMethod: calculationMethodRedux,
   } = useSelector((state) => state.volumeWeightCalculator);
-
 
   const [localCharges, setLocalCharges] = useState(
     chargesRedux || {
@@ -101,28 +97,64 @@ function ChargesCalculator() {
   };
 
   const calculateTotalCharges = () => {
-    let total = 0;
-    switch (calculationMethodRedux) {
+    let airfreight = 0;
+    let fsc = 0;
+    let ssc = 0;
+  
+    // Assume airfreight calculation is always based on the selected method for pricePerKg
+    switch (localCharges.pricePerKg.calculationMethod) {
       case 'chargeableWeight':
-        // Your existing calculation logic
+        airfreight = parseFloat(localCharges.pricePerKg.value) * chargeableWeight;
         break;
       case 'actualWeight':
-        // Calculation logic based on actual weight
+        airfreight = parseFloat(localCharges.pricePerKg.value) * totalWeight;
         break;
       case 'lumpSum':
-        // Calculation logic for lump sum
-        total = Number(localCharges.lumpSum) || 0; // Assuming lumpSum is a property of charges
+        // Assuming lump sum means a fixed value regardless of weight
+        airfreight = parseFloat(localCharges.pricePerKg.value);
         break;
-      case 'lumpSumPlusWeight':
-        // Calculation logic for lump sum plus weight per kg
-        total =
-          (Number(localCharges.lumpSum) || 0) +
-          (Number(localCharges.pricePerKg) || 0) * chargeableWeight;
-        break;
+      // Add other cases as needed
       default:
+        airfreight = 0;
         break;
     }
-    return total;
+  
+    // Assume FSC calculation is based on the selected method for FSC
+    switch (localCharges.fsc.calculationMethod) {
+      case 'chargeableWeight':
+        fsc = parseFloat(localCharges.fsc.value) * chargeableWeight;
+        break;
+      case 'actualWeight':
+        fsc = parseFloat(localCharges.fsc.value) * totalWeight;
+        break;
+      case 'lumpSum':
+        fsc = parseFloat(localCharges.fsc.value);
+        break;
+      default:
+        fsc = 0;
+        break;
+    }
+  
+    // Assume SSC calculation is based on the selected method for SSC
+    switch (localCharges.ssc.calculationMethod) {
+      case 'chargeableWeight':
+        ssc = parseFloat(localCharges.ssc.value) * chargeableWeight;
+        break;
+      case 'actualWeight':
+        ssc = parseFloat(localCharges.ssc.value) * totalWeight;
+        break;
+      case 'lumpSum':
+        ssc = parseFloat(localCharges.ssc.value);
+        break;
+      default:
+        ssc = 0;
+        break;
+    }
+  
+    // Sum up all charges
+    const total = airfreight + fsc + ssc;
+  
+    return total.toFixed(2);
   };
 
   const handleCustomChargeChange = (index, value) => {
@@ -185,7 +217,7 @@ function ChargesCalculator() {
               onChange={handleCalculationMethodChangeForPricePerKg}
               options={calculationOptions}
               classNamePrefix="react-select"
-              styles={reactSelectCustomStyles} 
+              styles={reactSelectCustomStyles}
             />
           </div>
 
@@ -206,7 +238,7 @@ function ChargesCalculator() {
               onChange={handleCalculationMethodChangeForFSC}
               options={calculationOptions}
               classNamePrefix="react-select"
-              styles={reactSelectCustomStyles} 
+              styles={reactSelectCustomStyles}
             />
           </div>
 
@@ -219,7 +251,7 @@ function ChargesCalculator() {
               placeholder="Security Surcharge (SSC)"
               value={localCharges.ssc.value}
               onChange={(e) => handleChange(e, 'ssc')}
-              className="py-2 px-4"              
+              className="py-2 px-4"
             />
             <Select
               value={calculationOptions.find(
@@ -228,7 +260,7 @@ function ChargesCalculator() {
               onChange={handleCalculationMethodChangeForSSC}
               options={calculationOptions}
               classNamePrefix="react-select"
-              styles={reactSelectCustomStyles} 
+              styles={reactSelectCustomStyles}
             />
           </div>
 
