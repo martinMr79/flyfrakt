@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setCharges } from '../../slices/volumeWeightCalculatorSlice'
+import {
+  setCharges,
+  setCalculationMethod,
+} from '../../slices/volumeWeightCalculatorSlice';
 
 function ChargesCalculator() {
   const dispatch = useDispatch();
-  const chargeableWeight = useSelector((state) => state.volumeWeightCalculator.chargeableWeight);
-  const totalWeight = useSelector(state => state.volumeWeightCalculator.totalWeight);
-  const totalCBM = useSelector(state => state.volumeWeightCalculator.totalCBM);
-  // Use the charges state from Redux
-  const chargesRedux = useSelector(state => state.volumeWeightCalculator.charges);
-
-  // Initialize component state with Redux state
-  const [charges, setLocalCharges] = useState(chargesRedux || {
+  const { chargeableWeight, totalCBM, totalWeight, charges: chargesRedux, calculationMethod: calculationMethodRedux } = useSelector(state => state.volumeWeightCalculator);
+  
+  const [localCharges, setLocalCharges] = useState(chargesRedux || {
     pricePerKg: '',
     fsc: '',
     ssc: '',
@@ -23,186 +20,212 @@ function ChargesCalculator() {
     customCharges: [],
   });
 
+  const handleCalculationMethodChange = (e) => {
+    const method = e.target.value;
+    dispatch(setCalculationMethod(method));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const updatedCharges = {...charges, [name]: value};
+    const updatedCharges = { ...localCharges, [name]: value };
     setLocalCharges(updatedCharges);
-    dispatch(setCharges(updatedCharges)); // Update Redux state
+    dispatch(setCharges(updatedCharges));
   };
 
-  const handleCustomChargeChange = (index, value) => {
-    const updatedCustomCharges = charges.customCharges.map((charge, i) => {
-      if (i === index) {
-        return { ...charge, value };
-      }
-      return charge;
-    });
-    setCharges((prevCharges) => ({
-      ...prevCharges,
-      customCharges: updatedCustomCharges,
-    }));
-  };
 
   const calculateTotalCharges = () => {
-    const airfreight = Number(charges.pricePerKg) * chargeableWeight || 0;
-    const fuelSurcharge = Number(charges.fsc) * chargeableWeight || 0;
-    const securitySurcharge = Number(charges.ssc) * chargeableWeight || 0;
-    const airportTerminal = Number(charges.airportTerminal) || 0;
-    const pickUp = Number(charges.pickUp) || 0;
-    const customClearance = Number(charges.customClearance) || 0;
-
-  const totalCustomCharges = charges.customCharges.reduce(
-    (total, charge) => total + Number(charge.value) || 0,
-    0
-    );
-
-
-    const total =
-      airfreight +
-      fuelSurcharge +
-      securitySurcharge +
-      airportTerminal +
-      pickUp +
-      customClearance +
-      totalCustomCharges;
-    return total.toFixed(2);
-  };
-
-  const addCustomField = () => {
-    setCharges((prevCharges) => {
-      const newCustomCharge = { name: '', value: '' }; // Define the structure of your custom charge
-      return {
-        ...prevCharges,
-        customCharges: [...prevCharges.customCharges, newCustomCharge],
-      };
-    });
-  };
-
-  const getCustomChargeRows = () => {
-    const rows = [];
-    for (let i = 0; i < charges.customCharges.length; i += 3) {
-      rows.push(charges.customCharges.slice(i, i + 3));
+    let total = 0;
+    switch (calculationMethodRedux) {
+      case 'chargeableWeight':
+        // Your existing calculation logic
+        break;
+      case 'actualWeight':
+        // Calculation logic based on actual weight
+        break;
+      case 'lumpSum':
+        // Calculation logic for lump sum
+        total = Number(localCharges.lumpSum) || 0; // Assuming lumpSum is a property of charges
+        break;
+      case 'lumpSumPlusWeight':
+        // Calculation logic for lump sum plus weight per kg
+        total =
+          (Number(localCharges.lumpSum) || 0) +
+          (Number(localCharges.pricePerKg) || 0) * chargeableWeight;
+        break;
+      default:
+        break;
     }
-    return rows;
+    return total;
   };
 
-  return (
-    <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
-      <h1 className="text-center mb-10 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
-        Airfreight Charges Calculator
-      </h1>
-      <div className="totals-display mb-4">
-      <p>CBM: {totalCBM} m³</p>
-      <p>Weight: {totalWeight} kg</p>
-      <p>Chargeable Weight: {chargeableWeight} kg</p>
-    </div>
-      <div className="bg-gray-200 w-full px-5 py-10">
-        <div className="flex mb-2 space-x-2  mt-4">
-          <input
-            type="number"
-            name="pricePerKg"
-            placeholder="Price per Kg"
-            value={charges.pricePerKg}
-            onChange={handleChange}
-            className="py-2 px-4 w-1/3"
-          />
-          <input
-            type="number"
-            name="fsc"
-            placeholder="Fuel Surcharge (FSC)"
-            value={charges.fsc}
-            onChange={handleChange}
-            className="py-2 px-4 w-1/3"
-          />
-          <input
-            type="number"
-            name="ssc"
-            placeholder="Security Surcharge (SSC)"
-            value={charges.ssc}
-            onChange={handleChange}
-            className="py-2 px-4 w-1/3"
-          />
-        </div>
 
-        <div className="flex mb-2 space-x-2  mt-2">
-          <input
-            type="number"
-            name="airportTerminal"
-            placeholder="Airport Terminal"
-            value={charges.airportTerminal}
-            onChange={handleChange}
-            className="py-2 px-4 w-1/3"
-          />
-          <input
-            type="number"
-            name="pickUp"
-            placeholder="Pick-up"
-            value={charges.pickUp}
-            onChange={handleChange}
-            className="py-2 px-4 w-1/3"
-          />
-          <input
-            type="number"
-            name="customClearance"
-            placeholder="Custom Clearance"
-            value={charges.customClearance}
-            onChange={handleChange}
-            className="py-2 px-4 w-1/3"
-          />
+    
+    const handleCustomChargeChange = (index, value) => {
+      const updatedCustomCharges = localCharges.customCharges.map((charge, i) => {
+        if (i === index) {
+          return { ...charge, value };
+        }
+        return charge;
+      });
+      const newCharges = { ...localCharges, customCharges: updatedCustomCharges };
+      setLocalCharges(newCharges);
+      dispatch(setCharges(newCharges));
+    };
+
+    const addCustomField = () => {
+      setCharges((prevCharges) => {
+        const newCustomCharge = { name: '', value: '' }; // Define the structure of your custom charge
+        return {
+          ...prevCharges,
+          customCharges: [...prevCharges.customCharges, newCustomCharge],
+        };
+      });
+    };
+
+    const getCustomChargeRows = () => {
+      const rows = [];
+      for (let i = 0; i < localCharges.customCharges.length; i += 3) {
+        rows.push(localCharges.customCharges.slice(i, i + 3));
+      }
+      return rows;
+    };
+
+
+    return (
+      <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
+        <h1 className="text-center mb-10 sm:text-2xl md:text-3xl lg:text-4xl text-blue-500 font-bold">
+          Airfreight Charges Calculator
+        </h1>
+        <div className="totals-display mb-4">
+          <p>CBM: {totalCBM} m³</p>
+          <p>Weight: {totalWeight} kg</p>
+          <p>Chargeable Weight: {chargeableWeight} kg</p>
         </div>
-        {getCustomChargeRows().map((row, rowIndex) => (
-          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2">
-            {row.map((charge, index) => (
-              <input
-                key={rowIndex * 3 + index}
-                type="number"
-                placeholder="Custom charge"
-                value={charge.value}
-                onChange={(e) => handleCustomChargeChange(rowIndex * 3 + index, e.target.value)}
-                className="py-2 px-4 w-1/3"
-              />
-            ))}
+        <div className="bg-gray-200 w-full px-5 py-10">
+          <div className="flex mb-2 space-x-2  mt-4">
+            <select
+              value={calculationMethodRedux}
+              onChange={handleCalculationMethodChange}
+              className="mb-4"
+            >
+              <option value="chargeableWeight">Chargeable Weight</option>
+              <option value="actualWeight">Actual Weight</option>
+              <option value="lumpSum">Lump Sum</option>
+              <option value="lumpSumPlusWeight">
+                Lump Sum + Weight per Kg
+              </option>
+            </select>
+
+            <input
+              type="number"
+              name="pricePerKg"
+              placeholder="Price per Kg"
+              value={localCharges.pricePerKg}
+              onChange={handleChange}
+              className="py-2 px-4 w-1/3"
+            />
+            <input
+              type="number"
+              name="fsc"
+              placeholder="Fuel Surcharge (FSC)"
+              value={localCharges.fsc}
+              onChange={handleChange}
+              className="py-2 px-4 w-1/3"
+            />
+            <input
+              type="number"
+              name="ssc"
+              placeholder="Security Surcharge (SSC)"
+              value={localCharges.ssc}
+              onChange={handleChange}
+              className="py-2 px-4 w-1/3"
+            />
           </div>
-        ))}
-        
-        <button
-          onClick={addCustomField}
-          className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out mt-4"
-        >
-          Add Custom Field
-        </button>
 
-        <h2 className="text-lg mt-8 font-bold">Total charges</h2>
-        <div>
-          Airfreight:{' '}
-          {(
-            parseFloat(charges.pricePerKg) * chargeableWeight || 0
-          ).toFixed(2)}{' '}
-        </div>
-        <div>
-          FSC:{' '}
-          {(parseFloat(charges.fsc) * chargeableWeight || 0).toFixed(2)}
-        </div>
-        <div>
-          SSC:{' '}
-          {(parseFloat(charges.ssc) * chargeableWeight || 0).toFixed(2)}
-        </div>
-        <h2 className="text-lg mt-8 font-bold">
-          Total Price: {calculateTotalCharges()}
-        </h2>
-      </div>
+          <div className="flex mb-2 space-x-2  mt-2">
+            <input
+              type="number"
+              name="airportTerminal"
+              placeholder="Airport Terminal"
+              value={localCharges.airportTerminal}
+              onChange={handleChange}
+              className="py-2 px-4 w-1/3"
+            />
+            <input
+              type="number"
+              name="pickUp"
+              placeholder="Pick-up"
+              value={localCharges.pickUp}
+              onChange={handleChange}
+              className="py-2 px-4 w-1/3"
+            />
+            <input
+              type="number"
+              name="customClearance"
+              placeholder="Custom Clearance"
+              value={localCharges.customClearance}
+              onChange={handleChange}
+              className="py-2 px-4 w-1/3"
+            />
+          </div>
+          {getCustomChargeRows().map((row, rowIndex) => (
+            <div key={rowIndex} className="flex mb-2 space-x-2 mt-2">
+              {row.map((charge, index) => (
+                <input
+                  key={rowIndex * 3 + index}
+                  type="number"
+                  placeholder="Custom charge"
+                  value={charge.value}
+                  onChange={(e) =>
+                    handleCustomChargeChange(
+                      rowIndex * 3 + index,
+                      e.target.value
+                    )
+                  }
+                  className="py-2 px-4 w-1/3"
+                />
+              ))}
+            </div>
+          ))}
 
-      <div className="pt-8">
-        <Link
-          to="/"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 font-bold"
-        >
-          Go to Volume Weight Calculator
-        </Link>
+          <button
+            onClick={addCustomField}
+            className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300 ease-in-out mt-4"
+          >
+            Add Custom Field
+          </button>
+
+          <h2 className="text-lg mt-8 font-bold">Total charges</h2>
+          <div>
+            Airfreight:{' '}
+            {(
+              parseFloat(localCharges.pricePerKg) * chargeableWeight || 0
+            ).toFixed(2)}{' '}
+          </div>
+          <div>
+            FSC:{' '}
+            {(parseFloat(localCharges.fsc) * chargeableWeight || 0).toFixed(2)}
+          </div>
+          <div>
+            SSC:{' '}
+            {(parseFloat(localCharges.ssc) * chargeableWeight || 0).toFixed(2)}
+          </div>
+          <h2 className="text-lg mt-8 font-bold">
+            Total Price: {calculateTotalCharges()}
+          </h2>
+        </div>
+
+        <div className="pt-8">
+          <Link
+            to="/"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300 font-bold"
+          >
+            Go to Volume Weight Calculator
+          </Link>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  };
+
 
 export default ChargesCalculator;

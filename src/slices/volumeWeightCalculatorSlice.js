@@ -1,7 +1,9 @@
 // src/slices/volumeWeightCalculatorSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
+
 export const volumeWeightCalculatorSlice = createSlice({
+
   name: 'volumeWeightCalculator',
   initialState: {
     totalWeight: 0,
@@ -15,10 +17,16 @@ export const volumeWeightCalculatorSlice = createSlice({
       airportTerminal: '',
       pickUp: '',
       customClearance: '',
+      calculationMethod: 'chargeableWeight',
       customCharges: [],
     },
   },
   reducers: {
+
+    setCalculationMethod: (state, action) => {
+      state.calculationMethod = action.payload;
+    },
+
     setRows: (state, action) => {
       state.rows = action.payload;
     },
@@ -50,8 +58,9 @@ export const volumeWeightCalculatorSlice = createSlice({
   },
 });
 
-// Actions and reducers export
+
 export const {
+  setCalculationMethod,
   setRows,
   setTotalWeight,
   setChargeableWeight,
@@ -59,7 +68,7 @@ export const {
   setCharges,
   addCustomCharge,
   updateCustomCharge,
-  removeCustomCharge, // If you implemented it
+  removeCustomCharge, 
 } = volumeWeightCalculatorSlice.actions;
 
 export default volumeWeightCalculatorSlice.reducer;
