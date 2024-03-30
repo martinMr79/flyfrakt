@@ -4,7 +4,6 @@ import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import {
   setCharges,
-  setCalculationMethod,
 } from '../../slices/volumeWeightCalculatorSlice';
 
 const reactSelectCustomStyles = {
@@ -37,36 +36,6 @@ function ChargesCalculator() {
     calculationMethod: calculationMethodRedux,
   } = useSelector((state) => state.volumeWeightCalculator);
 
-  const initialChargesState = {
-    pricePerKg: {
-      value: '',
-      calculationMethod: 'chargeableWeight', // Default calculation method
-    },
-    fsc: {
-      value: '',
-      calculationMethod: 'chargeableWeight', // Default calculation method
-    },
-    ssc: {
-      value: '',
-      calculationMethod: 'chargeableWeight', // Default calculation method
-    },
-    airportTerminal: {
-      value: '',
-      calculationMethod: 'chargeableWeight', // Default calculation method
-    },
-
-    pickUp: {
-      value: '',
-      calculationMethod: 'chargeableWeight', // Default calculation method
-    },
-
-    customClearnace: {
-      value: '',
-      calculationMethod: 'chargeableWeight', // Default calculation method
-    },
-
-    // other charges...?
-  };
 
   const [localCharges, setLocalCharges] = useState(
     chargesRedux || {
@@ -79,19 +48,6 @@ function ChargesCalculator() {
       customCharges: [],
     }
   );
-
-  const handleCalculationMethodChange = (e, chargeKey) => {
-    const method = e.target.value;
-    const updatedCharges = {
-      ...localCharges,
-      [chargeKey]: {
-        ...localCharges[chargeKey],
-        calculationMethod: method,
-      },
-    };
-    setLocalCharges(updatedCharges);
-    dispatch(setCalculationMethod(updatedCharges)); // Update this action to handle the new structure
-  };
 
   const handleChange = (e, chargeKey) => {
     const { name, value } = e.target;
