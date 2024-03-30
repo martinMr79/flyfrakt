@@ -30,7 +30,7 @@ function ChargesCalculator() {
     totalCBM,
     totalWeight,
     charges: chargesRedux,
-    calculationMethod: calculationMethodRedux,
+      // calculationMethod: calculationMethodRedux, // Remove?
   } = useSelector((state) => state.volumeWeightCalculator);
 
   const [localCharges, setLocalCharges] = useState(
@@ -207,7 +207,7 @@ function ChargesCalculator() {
               placeholder="Price per Kg"
               value={localCharges.pricePerKg.value}
               onChange={(e) => handleChange(e, 'pricePerKg')}
-              className="py-2 px-4 w-full"
+              className="py-2 px-4 w-full mb-0.5"
             />
             <Select
               value={calculationOptions.find(
@@ -229,7 +229,7 @@ function ChargesCalculator() {
               placeholder="Fuel Surcharge (FSC)"
               value={localCharges.fsc.value}
               onChange={(e) => handleChange(e, 'fsc')}
-              className="py-2 px-4 w-full"
+              className="py-2 px-4 w-full mb-0.5"
             />
             <Select
               value={calculationOptions.find(
@@ -251,7 +251,7 @@ function ChargesCalculator() {
               placeholder="Security Surcharge (SSC)"
               value={localCharges.ssc.value}
               onChange={(e) => handleChange(e, 'ssc')}
-              className="py-2 px-4"
+              className="py-2 px-4 mb-0.5"
             />
             <Select
               value={calculationOptions.find(
@@ -264,7 +264,7 @@ function ChargesCalculator() {
             />
           </div>
 
-          <div className="flex mb-2 space-x-2  mt-2 w-full">
+          <div className="flex mb-2 space-x-2  mt-4 w-full">
             <input
               type="number"
               name="value"
