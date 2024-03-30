@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import {
   setCharges,
@@ -85,6 +86,33 @@ function ChargesCalculator() {
     dispatch(setCharges(updatedCharges));
   };
 
+  const calculationOptions = [
+    { value: 'chargeableWeight', label: 'Chargeable Weight' },
+    { value: 'actualWeight', label: 'Actual Weight' },
+    { value: 'lumpSum', label: 'Lump Sum' },
+  ];
+
+  const handleCalculationMethodChangeForPricePerKg = selectedOption => {
+    const updatedCharges = { ...localCharges, ssc: { ...localCharges.ssc, calculationMethod: selectedOption.value }};
+    setLocalCharges(updatedCharges);
+    dispatch(setCharges(updatedCharges));
+  };
+
+
+
+  const handleCalculationMethodChangeForFSC = selectedOption => {
+    // Assuming you want to store the selected option's value in your local state and Redux
+    const updatedCharges = { ...localCharges, fsc: { ...localCharges.fsc, calculationMethod: selectedOption.value }};
+    setLocalCharges(updatedCharges);
+    dispatch(setCharges(updatedCharges));
+  };
+
+  const handleCalculationMethodChangeForSSC = selectedOption => {
+    const updatedCharges = { ...localCharges, ssc: { ...localCharges.ssc, calculationMethod: selectedOption.value }};
+    setLocalCharges(updatedCharges);
+    dispatch(setCharges(updatedCharges));
+  };
+
   const calculateTotalCharges = () => {
     let total = 0;
     switch (calculationMethodRedux) {
@@ -156,42 +184,38 @@ function ChargesCalculator() {
           <div className="w-1/3 pr-1">
             <input
               type="number"
-              name="pricePerKg"
+              name="pricePerKgValue"
               placeholder="Price per Kg"
               value={localCharges.pricePerKg.value}
               onChange={(e) => handleChange(e, 'pricePerKg')}
               className="py-2 px-4 w-full"
             />
-            <select
-              value={localCharges.pricePerKg.calculationMethod}
-              onChange={(e) => handleCalculationMethodChange(e, 'pricePerKg')}
-              className="w-full"
-            >
-              <option value="chargeableWeight">Chargeable Weight</option>
-              <option value="actualWeight">Actual Weight</option>
-              <option value="lumpSum">Lump Sum</option>
-            </select>
+      <Select
+        value={calculationOptions.find(option => option.value === localCharges.ssc.calculationMethod)}
+        onChange={handleCalculationMethodChangeForPricePerKg}
+        options={calculationOptions}
+        className="select-styles-here"
+        classNamePrefix="react-select" // This is for applying custom styles if you have any
+      />
           </div>
 
           {/* Fuel Surcharge (FSC) Input and Selector */}
           <div className="w-1/3 pr-1">
             <input
               type="number"
-              name="value"
+              name="fscValue"
               placeholder="Fuel Surcharge (FSC)"
               value={localCharges.fsc.value}
               onChange={(e) => handleChange(e, 'fsc')}
               className="py-2 px-4 w-full"
             />
-            <select
-              value={localCharges.fsc.calculationMethod}
-              onChange={(e) => handleCalculationMethodChange(e, 'fsc')}
-              className="w-full"
-            >
-              <option value="chargeableWeight">Chargeable Weight</option>
-              <option value="actualWeight">Actual Weight</option>
-              <option value="lumpSum">Lump Sum</option>
-            </select>
+      <Select
+        value={calculationOptions.find(option => option.value === localCharges.ssc.calculationMethod)}
+        onChange={handleCalculationMethodChangeForFSC}
+        options={calculationOptions}
+        className="select-styles-here"
+        classNamePrefix="react-select" // This is for applying custom styles if you have any
+      />
           </div>
 
           {/* Security Surcharge (SSC) Input and Selector */}
@@ -199,21 +223,19 @@ function ChargesCalculator() {
           <div className="w-1/3 pr-1">
             <input
               type="number"
-              name="value"
+              name="sscValue"
               placeholder="Security Surcharge (SSC)"
               value={localCharges.ssc.value}
               onChange={(e) => handleChange(e, 'ssc')}
               className="py-2 px-4 w-full"
             />
-            <select
-              value={localCharges.ssc.calculationMethod}
-              onChange={(e) => handleCalculationMethodChange(e, 'ssc')}
-              className="w-full"
-            >
-              <option value="chargeableWeight">Chargeable Weight</option>
-              <option value="actualWeight">Actual Weight</option>
-              <option value="lumpSum">Lump Sum</option>
-            </select>
+      <Select
+        value={calculationOptions.find(option => option.value === localCharges.ssc.calculationMethod)}
+        onChange={handleCalculationMethodChangeForSSC}
+        options={calculationOptions}
+        className="select-styles-here"
+        classNamePrefix="react-select" // This is for applying custom styles if you have any
+      />
           </div>
 
           <div className="flex mb-2 space-x-2  mt-2 w-full">
