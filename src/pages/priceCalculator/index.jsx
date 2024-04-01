@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import { setCharges } from '../../slices/volumeWeightCalculatorSlice';
-import { calculateTotalCharges } from '../../utils/calculationUtils'; 
+import { calculateTotalCharges } from '../../utils/calculationUtils';
 import useCalculationMethod from '../../hooks/useCalculationMethod';
+import { useCustomCharges } from '../../hooks/useCustomCharges';
 
 const reactSelectCustomStyles = {
   control: (provided, state) => ({
@@ -46,6 +47,12 @@ function ChargesCalculator() {
     }
   );
 
+  const { handleCustomChargeChange, addCustomField } = useCustomCharges(
+    localCharges,
+    setLocalCharges,
+    dispatch
+  );
+
   const handleChange = (e, chargeKey) => {
     const { name, value } = e.target;
     const updatedCharges = {
@@ -65,8 +72,15 @@ function ChargesCalculator() {
     { value: 'lumpSum', label: 'Lump Sum' },
   ];
 
-  const handleCalculationMethodChange = useCalculationMethod(localCharges, setLocalCharges);
-  const totalCharges = calculateTotalCharges(localCharges, chargeableWeight, totalWeight);
+  const handleCalculationMethodChange = useCalculationMethod(
+    localCharges,
+    setLocalCharges
+  );
+  const totalCharges = calculateTotalCharges(
+    localCharges,
+    chargeableWeight,
+    totalWeight
+  );
 
   const handleCalculationMethodChangeForPricePerKg = (selectedOption) => {
     handleCalculationMethodChange('pricePerKg', selectedOption);
@@ -80,27 +94,7 @@ function ChargesCalculator() {
     handleCalculationMethodChange('ssc', selectedOption);
   };
 
-  const handleCustomChargeChange = (index, value) => {
-    const updatedCustomCharges = localCharges.customCharges.map((charge, i) => {
-      if (i === index) {
-        return { ...charge, value };
-      }
-      return charge;
-    });
-    const newCharges = { ...localCharges, customCharges: updatedCustomCharges };
-    setLocalCharges(newCharges);
-    dispatch(setCharges(newCharges));
-  };
 
-  const addCustomField = () => {
-    setCharges((prevCharges) => {
-      const newCustomCharge = { name: '', value: '' }; 
-      return {
-        ...prevCharges,
-        customCharges: [...prevCharges.customCharges, newCustomCharge],
-      };
-    });
-  };
 
   const getCustomChargeRows = () => {
     const rows = [];
@@ -167,7 +161,6 @@ function ChargesCalculator() {
           </div>
 
           {/* Security Surcharge (SSC) Input and Selector */}
-
           <div className="w-1/3 pr-1 flex flex-col">
             <input
               type="number"
@@ -248,15 +241,17 @@ function ChargesCalculator() {
         </div>
         <div>
           FSC:{' '}
-          {(parseFloat(localCharges.fsc.value) * chargeableWeight || 0).toFixed(2)}
+          {(parseFloat(localCharges.fsc.value) * chargeableWeight || 0).toFixed(
+            2
+          )}
         </div>
         <div>
           SSC:{' '}
-          {(parseFloat(localCharges.ssc.value) * chargeableWeight || 0).toFixed(2)}
+          {(parseFloat(localCharges.ssc.value) * chargeableWeight || 0).toFixed(
+            2
+          )}
         </div>
-        <h2 className="text-lg mt-8 font-bold">
-          Total Price: ${totalCharges}
-        </h2>
+        <h2 className="text-lg mt-8 font-bold">Total Price: ${totalCharges}</h2>
       </div>
 
       <div className="pt-8">
