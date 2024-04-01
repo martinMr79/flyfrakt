@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import { setCharges } from '../../slices/volumeWeightCalculatorSlice';
 import { calculateTotalCharges } from '../../utils/calculationUtils'; 
+import useCalculationMethod from '../../hooks/useCalculationMethod';
 
 const reactSelectCustomStyles = {
   control: (provided, state) => ({
@@ -31,7 +32,6 @@ function ChargesCalculator() {
     totalCBM,
     totalWeight,
     charges: chargesRedux,
-      // calculationMethod: calculationMethodRedux, // Remove?
   } = useSelector((state) => state.volumeWeightCalculator);
 
   const [localCharges, setLocalCharges] = useState(
@@ -45,8 +45,6 @@ function ChargesCalculator() {
       customCharges: [],
     }
   );
-
-  const totalCharges = calculateTotalCharges(localCharges, chargeableWeight, totalWeight);
 
   const handleChange = (e, chargeKey) => {
     const { name, value } = e.target;
@@ -67,40 +65,20 @@ function ChargesCalculator() {
     { value: 'lumpSum', label: 'Lump Sum' },
   ];
 
+  const handleCalculationMethodChange = useCalculationMethod(localCharges, setLocalCharges);
+  const totalCharges = calculateTotalCharges(localCharges, chargeableWeight, totalWeight);
+
   const handleCalculationMethodChangeForPricePerKg = (selectedOption) => {
-    const updatedCharges = {
-      ...localCharges,
-      pricePerKg: {
-        ...localCharges.pricePerKg,
-        calculationMethod: selectedOption.value,
-      },
-    };
-    setLocalCharges(updatedCharges);
-    dispatch(setCharges(updatedCharges));
+    handleCalculationMethodChange('pricePerKg', selectedOption);
   };
 
-  // Handler for FSC calculation method change
   const handleCalculationMethodChangeForFSC = (selectedOption) => {
-    const updatedCharges = {
-      ...localCharges,
-      fsc: { ...localCharges.fsc, calculationMethod: selectedOption.value },
-    };
-    setLocalCharges(updatedCharges);
-    dispatch(setCharges(updatedCharges));
+    handleCalculationMethodChange('fsc', selectedOption);
   };
 
   const handleCalculationMethodChangeForSSC = (selectedOption) => {
-    // Directly use the selected option value
-    const updatedCharges = {
-      ...localCharges,
-      ssc: { ...localCharges.ssc, calculationMethod: selectedOption.value },
-    };
-    setLocalCharges(updatedCharges);
-    dispatch(setCharges(updatedCharges)); // Assuming setCharges can handle the entire charges object
+    handleCalculationMethodChange('ssc', selectedOption);
   };
-
-// const total = calculateTotalCharges(localCharges, chargeableWeight, totalWeight);
-
 
   const handleCustomChargeChange = (index, value) => {
     const updatedCustomCharges = localCharges.customCharges.map((charge, i) => {
@@ -116,7 +94,7 @@ function ChargesCalculator() {
 
   const addCustomField = () => {
     setCharges((prevCharges) => {
-      const newCustomCharge = { name: '', value: '' }; // Define the structure of your custom charge
+      const newCustomCharge = { name: '', value: '' }; 
       return {
         ...prevCharges,
         customCharges: [...prevCharges.customCharges, newCustomCharge],
@@ -144,6 +122,7 @@ function ChargesCalculator() {
       </div>
       <div className="bg-gray-200 w-full px-5 py-10">
         <div className="flex flex-wrap mb-2 mt-4 ">
+
           {/* Price per Kg Input and Selector */}
           <div className="w-1/3 pr-1 flex flex-col">
             <input
