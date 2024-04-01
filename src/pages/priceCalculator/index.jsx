@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import { setCharges } from '../../slices/volumeWeightCalculatorSlice';
+import { calculateTotalCharges } from '../../utils/calculationUtils'; 
 
 const reactSelectCustomStyles = {
   control: (provided, state) => ({
@@ -44,6 +45,8 @@ function ChargesCalculator() {
       customCharges: [],
     }
   );
+
+  const totalCharges = calculateTotalCharges(localCharges, chargeableWeight, totalWeight);
 
   const handleChange = (e, chargeKey) => {
     const { name, value } = e.target;
@@ -96,66 +99,8 @@ function ChargesCalculator() {
     dispatch(setCharges(updatedCharges)); // Assuming setCharges can handle the entire charges object
   };
 
-  const calculateTotalCharges = () => {
-    let airfreight = 0;
-    let fsc = 0;
-    let ssc = 0;
-  
-    // Assume airfreight calculation is always based on the selected method for pricePerKg
-    switch (localCharges.pricePerKg.calculationMethod) {
-      case 'chargeableWeight':
-        airfreight = parseFloat(localCharges.pricePerKg.value) * chargeableWeight;
-        break;
-      case 'actualWeight':
-        airfreight = parseFloat(localCharges.pricePerKg.value) * totalWeight;
-        break;
-      case 'lumpSum':
-        // Assuming lump sum means a fixed value regardless of weight
-        airfreight = parseFloat(localCharges.pricePerKg.value);
-        break;
-      // Add other cases as needed
-      default:
-        airfreight = 0;
-        break;
-    }
-  
-    // Assume FSC calculation is based on the selected method for FSC
-    switch (localCharges.fsc.calculationMethod) {
-      case 'chargeableWeight':
-        fsc = parseFloat(localCharges.fsc.value) * chargeableWeight;
-        break;
-      case 'actualWeight':
-        fsc = parseFloat(localCharges.fsc.value) * totalWeight;
-        break;
-      case 'lumpSum':
-        fsc = parseFloat(localCharges.fsc.value);
-        break;
-      default:
-        fsc = 0;
-        break;
-    }
-  
-    // Assume SSC calculation is based on the selected method for SSC
-    switch (localCharges.ssc.calculationMethod) {
-      case 'chargeableWeight':
-        ssc = parseFloat(localCharges.ssc.value) * chargeableWeight;
-        break;
-      case 'actualWeight':
-        ssc = parseFloat(localCharges.ssc.value) * totalWeight;
-        break;
-      case 'lumpSum':
-        ssc = parseFloat(localCharges.ssc.value);
-        break;
-      default:
-        ssc = 0;
-        break;
-    }
-  
-    // Sum up all charges
-    const total = airfreight + fsc + ssc;
-  
-    return total.toFixed(2);
-  };
+// const total = calculateTotalCharges(localCharges, chargeableWeight, totalWeight);
+
 
   const handleCustomChargeChange = (index, value) => {
     const updatedCustomCharges = localCharges.customCharges.map((charge, i) => {
@@ -331,7 +276,7 @@ function ChargesCalculator() {
           {(parseFloat(localCharges.ssc.value) * chargeableWeight || 0).toFixed(2)}
         </div>
         <h2 className="text-lg mt-8 font-bold">
-          Total Price: {calculateTotalCharges()}
+          Total Price: ${totalCharges}
         </h2>
       </div>
 
