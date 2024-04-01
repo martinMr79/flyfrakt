@@ -319,16 +319,16 @@ function ChargesCalculator() {
         <div>
           Airfreight:{' '}
           {(
-            parseFloat(localCharges.pricePerKg) * chargeableWeight || 0
+            parseFloat(localCharges.pricePerKg.value) * chargeableWeight || 0
           ).toFixed(2)}{' '}
         </div>
         <div>
           FSC:{' '}
-          {(parseFloat(localCharges.fsc) * chargeableWeight || 0).toFixed(2)}
+          {(parseFloat(localCharges.fsc.value) * chargeableWeight || 0).toFixed(2)}
         </div>
         <div>
           SSC:{' '}
-          {(parseFloat(localCharges.ssc) * chargeableWeight || 0).toFixed(2)}
+          {(parseFloat(localCharges.ssc.value) * chargeableWeight || 0).toFixed(2)}
         </div>
         <h2 className="text-lg mt-8 font-bold">
           Total Price: {calculateTotalCharges()}
