@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-// eslint-disable-next-line no-unused-vars
 import { setChargeableWeight, setTotalCBM, setTotalWeight, setRows } from '../../slices/volumeWeightCalculatorSlice';
 
 function CustomGrid() {
