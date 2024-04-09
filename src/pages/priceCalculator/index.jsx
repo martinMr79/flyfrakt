@@ -160,7 +160,7 @@ function ChargesCalculator() {
         </div>
 
         {getCustomChargeRows().map((row, rowIndex) => (
-          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2">
+          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2 pr-1">
             {row.map((charge, index) => (
               <input
                 key={rowIndex * 3 + index}
