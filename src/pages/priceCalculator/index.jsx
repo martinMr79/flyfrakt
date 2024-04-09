@@ -7,7 +7,6 @@ import useCalculationMethod from '../../hooks/useCalculationMethod';
 import { useCustomCharges } from '../../hooks/useCustomCharges';
 import ChargeInput from '../../components/ChargeInput';
 
-
 function ChargesCalculator() {
   const dispatch = useDispatch();
   const {
@@ -122,7 +121,9 @@ function ChargesCalculator() {
               handleCalculationMethodChange('ssc', selectedOption)
             }
           />
+        </div>
 
+        <div className="flex flex-wrap mb-2 mt-4">
           <ChargeInput
             chargeType="airportTerminal"
             label="Airport Terminal"
@@ -156,8 +157,10 @@ function ChargesCalculator() {
             }
           />
         </div>
+
+
         {getCustomChargeRows().map((row, rowIndex) => (
-          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2">
+          <div key={rowIndex} className="flex mb-2 space-x-2 mt-4">
             {row.map((charge, index) => (
               <input
                 key={rowIndex * 3 + index}
