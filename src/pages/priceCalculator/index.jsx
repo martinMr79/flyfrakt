@@ -66,14 +66,6 @@ function ChargesCalculator() {
     setLocalCharges
   );
 
-  const handleCalculationMethodChangeForFSC = (selectedOption) => {
-    handleCalculationMethodChange('fsc', selectedOption);
-  };
-
-  const handleCalculationMethodChangeForSSC = (selectedOption) => {
-    handleCalculationMethodChange('ssc', selectedOption);
-  };
-
   const getCustomChargeRows = () => {
     const rows = [];
     for (let i = 0; i < localCharges.customCharges.length; i += 3) {
