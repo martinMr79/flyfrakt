@@ -123,7 +123,7 @@ function ChargesCalculator() {
           />
         </div>
 
-        <div className="flex flex-wrap mb-2 mt-4">
+        <div className="flex flex-wrap mb-2 mt-2">
           <ChargeInput
             chargeType="airportTerminal"
             label="Airport Terminal"
@@ -160,7 +160,7 @@ function ChargesCalculator() {
 
 
         {getCustomChargeRows().map((row, rowIndex) => (
-          <div key={rowIndex} className="flex mb-2 space-x-2 mt-4">
+          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2">
             {row.map((charge, index) => (
               <input
                 key={rowIndex * 3 + index}
