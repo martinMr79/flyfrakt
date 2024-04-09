@@ -1,44 +1,29 @@
 // utils/calculationUtils.js
 
+import calculateCharge from "./calculateCharge";
+
+// Assume calculateCharge is imported and working as expected
+
 export const calculateTotalCharges = (localCharges, chargeableWeight, totalWeight) => {
-  let airfreight = 0;
-  let fsc = 0;
-  let ssc = 0;
-  let airportTerminal = 0;
-  let pickUp = 0;
-  let customClearance = 0;
-
-  // Helper function to calculate charge based on method
-  const calculateCharge = (value, method) => {
-    switch (method) {
-      case 'chargeableWeight':
-        return parseFloat(value) * chargeableWeight;
-      case 'actualWeight':
-        return parseFloat(value) * totalWeight;
-      case 'lumpSum':
-        return parseFloat(value);
-      default:
-        return 0;
-    }
-  };
-
-  airfreight += calculateCharge(localCharges.pricePerKg.value, localCharges.pricePerKg.calculationMethod);
-  fsc += calculateCharge(localCharges.fsc.value, localCharges.fsc.calculationMethod);
-  ssc += calculateCharge(localCharges.ssc.value, localCharges.ssc.calculationMethod);
-  airportTerminal += calculateCharge(localCharges.airportTerminal.value, localCharges.airportTerminal.calculationMethod);
-  pickUp += calculateCharge(localCharges.pickUp.value, localCharges.pickUp.calculationMethod);
-  customClearance += calculateCharge(localCharges.customClearance.value, localCharges.customClearance.calculationMethod);
-
-  // Calculate custom charges if any
-  let customChargesTotal = 0;
-  if (localCharges.customCharges && localCharges.customCharges.length > 0) {
-    localCharges.customCharges.forEach(charge => {
-      customChargesTotal += parseFloat(charge.value) || 0;
-    });
+  // Use calculateCharge for each charge type
+  const airfreight = parseFloat(calculateCharge(localCharges.pricePerKg, chargeableWeight, totalWeight));
+  const fsc = parseFloat(calculateCharge(localCharges.fsc, chargeableWeight, totalWeight));
+  const ssc = parseFloat(calculateCharge(localCharges.ssc, chargeableWeight, totalWeight));
+  const airportTerminal = parseFloat(calculateCharge(localCharges.airportTerminal, chargeableWeight, totalWeight));
+  const pickUp = parseFloat(calculateCharge(localCharges.pickUp, chargeableWeight, totalWeight));
+  const customClearance = parseFloat(calculateCharge(localCharges.customClearance, chargeableWeight, totalWeight));
+  
+  // Sum up all charges
+  const total = airfreight + fsc + ssc + airportTerminal + pickUp + customClearance;
+  
+  // Make sure total is a number before calling toFixed
+  if (isNaN(total)) {
+    console.error("Total charges calculation resulted in NaN");
+    return "0.00"; // Default to "0.00" or handle as needed
   }
 
-  const total = airfreight + fsc + ssc + airportTerminal + pickUp + customClearance + customChargesTotal;
-  return total.toFixed(2); // Adjusting to 2 decimal places for currency formatting
+  return total.toFixed(2); // Convert total to a fixed decimal string
 };
+
 
   

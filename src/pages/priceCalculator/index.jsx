@@ -6,6 +6,7 @@ import { calculateTotalCharges } from '../../utils/calculationUtils';
 import useCalculationMethod from '../../hooks/useCalculationMethod';
 import { useCustomCharges } from '../../hooks/useCustomCharges';
 import ChargeInput from '../../components/ChargeInput';
+import calculateCharge from '../../utils/calculateCharge';
 
 function ChargesCalculator() {
   const dispatch = useDispatch();
@@ -184,42 +185,44 @@ function ChargesCalculator() {
 
         <h2 className="text-lg mt-8 font-bold">Airline charges</h2>
         <div>
-          Airfreight:{' '}
-          {(
-            parseFloat(localCharges.pricePerKg.value) * chargeableWeight || 0
-          ).toFixed(2)}{' '}
-        </div>
-        <div>
-          FSC:{' '}
-          {(parseFloat(localCharges.fsc.value) * chargeableWeight || 0).toFixed(
-            2
+          Airfreight: $
+          {calculateCharge(
+            localCharges.pricePerKg,
+            chargeableWeight,
+            totalWeight
           )}
         </div>
         <div>
-          SSC:{' '}
-          {(parseFloat(localCharges.ssc.value) * chargeableWeight || 0).toFixed(
-            2
-          )}
+          FSC: $
+          {calculateCharge(localCharges.fsc, chargeableWeight, totalWeight)}
+        </div>
+        <div>
+          SSC: $
+          {calculateCharge(localCharges.ssc, chargeableWeight, totalWeight)}
           <h2 className="text-lg mt-1 font-bold">Other Charges</h2>
           <div>
-            Airport Terminal:{' '}
-            {(
-              parseFloat(localCharges.airportTerminal.value) *
-                chargeableWeight || 0
-            ).toFixed(2)}{' '}
+            Airport Terminal: $
+            {calculateCharge(
+              localCharges.airportTerminal,
+              chargeableWeight,
+              totalWeight
+            )}
           </div>
           <div>
-            Pick-up:{' '}
-            {(
-              parseFloat(localCharges.pickUp.value) * chargeableWeight || 0
-            ).toFixed(2)}{' '}
+            Pick-up: $
+            {calculateCharge(
+              localCharges.pickUp,
+              chargeableWeight,
+              totalWeight
+            )}
           </div>
           <div>
-            Custom Clearance:{' '}
-            {(
-              parseFloat(localCharges.customClearance.value) *
-                chargeableWeight || 0
-            ).toFixed(2)}{' '}
+            Custom Clearance: $
+            {calculateCharge(
+              localCharges.customClearance,
+              chargeableWeight,
+              totalWeight
+            )}
           </div>
         </div>
         <h2 className="text-xl mt-8 font-bold">Total Price: ${totalCharges}</h2>
