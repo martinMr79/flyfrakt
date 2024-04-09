@@ -158,7 +158,6 @@ function ChargesCalculator() {
           />
         </div>
 
-
         {getCustomChargeRows().map((row, rowIndex) => (
           <div key={rowIndex} className="flex mb-2 space-x-2 mt-2">
             {row.map((charge, index) => (
@@ -202,28 +201,26 @@ function ChargesCalculator() {
             2
           )}
           <h2 className="text-lg mt-1 font-bold">Other Charges</h2>
-
           <div>
-          Airport Terminal:{' '}
-          {(
-            parseFloat(localCharges.airportTerminal.value) * chargeableWeight || 0
-          ).toFixed(2)}{' '}
-        </div>
-
-        <div>
-          Pick-up:{' '}
-          {(
-            parseFloat(localCharges.pickUp.value) * chargeableWeight || 0
-          ).toFixed(2)}{' '}
-        </div>
-
-        <div>
-        Custom Clearance:{' '}
-          {(
-            parseFloat(localCharges.customClearance.value) * chargeableWeight || 0
-          ).toFixed(2)}{' '}
-        </div>
-
+            Airport Terminal:{' '}
+            {(
+              parseFloat(localCharges.airportTerminal.value) *
+                chargeableWeight || 0
+            ).toFixed(2)}{' '}
+          </div>
+          <div>
+            Pick-up:{' '}
+            {(
+              parseFloat(localCharges.pickUp.value) * chargeableWeight || 0
+            ).toFixed(2)}{' '}
+          </div>
+          <div>
+            Custom Clearance:{' '}
+            {(
+              parseFloat(localCharges.customClearance.value) *
+                chargeableWeight || 0
+            ).toFixed(2)}{' '}
+          </div>
         </div>
         <h2 className="text-xl mt-8 font-bold">Total Price: ${totalCharges}</h2>
       </div>
