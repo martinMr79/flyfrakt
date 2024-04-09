@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import { setCharges } from '../../slices/volumeWeightCalculatorSlice';
 import { calculateTotalCharges } from '../../utils/calculationUtils';
@@ -8,24 +7,6 @@ import useCalculationMethod from '../../hooks/useCalculationMethod';
 import { useCustomCharges } from '../../hooks/useCustomCharges';
 import ChargeInput from '../../components/ChargeInput';
 
-const reactSelectCustomStyles = {
-  control: (provided, state) => ({
-    ...provided,
-    border: state.isFocused ? '1px solid #ccc' : 'none',
-    borderRadius: '0',
-    minHeight: '40px',
-    height: '40px',
-    paddingLeft: '0.35rem',
-  }),
-  singleValue: (provided) => ({
-    ...provided,
-    paddingLeft: '0rem',
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    paddingLeft: '1rem',
-  }),
-};
 
 function ChargesCalculator() {
   const dispatch = useDispatch();
@@ -112,7 +93,7 @@ function ChargesCalculator() {
         <p>Chargeable Weight: {chargeableWeight} kg</p>
       </div>
       <div className="bg-gray-200 w-full px-5 py-10">
-        <div className="flex flex-wrap mb-2 mt-4 ">
+        <div className="flex flex-wrap mb-2 mt-4">
           {/* Price per Kg Input and Selector */}
           {/* Implement ChargeInput for each charge type */}
           <ChargeInput
