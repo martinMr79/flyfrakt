@@ -183,7 +183,7 @@ function ChargesCalculator() {
           Add Custom Field
         </button>
 
-        <h2 className="text-lg mt-8 font-bold">Total charges</h2>
+        <h2 className="text-lg mt-8 font-bold">Airline charges</h2>
         <div>
           Airfreight:{' '}
           {(
@@ -201,8 +201,31 @@ function ChargesCalculator() {
           {(parseFloat(localCharges.ssc.value) * chargeableWeight || 0).toFixed(
             2
           )}
+          <h2 className="text-lg mt-1 font-bold">Other Charges</h2>
+
+          <div>
+          Airport Terminal:{' '}
+          {(
+            parseFloat(localCharges.airportTerminal.value) * chargeableWeight || 0
+          ).toFixed(2)}{' '}
         </div>
-        <h2 className="text-lg mt-8 font-bold">Total Price: ${totalCharges}</h2>
+
+        <div>
+          Pick-up:{' '}
+          {(
+            parseFloat(localCharges.pickUp.value) * chargeableWeight || 0
+          ).toFixed(2)}{' '}
+        </div>
+
+        <div>
+        Custom Clearance:{' '}
+          {(
+            parseFloat(localCharges.customClearance.value) * chargeableWeight || 0
+          ).toFixed(2)}{' '}
+        </div>
+
+        </div>
+        <h2 className="text-xl mt-8 font-bold">Total Price: ${totalCharges}</h2>
       </div>
 
       <div className="pt-8">
