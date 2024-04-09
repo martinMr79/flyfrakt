@@ -54,20 +54,19 @@ function ChargesCalculator() {
     dispatch
   );
 
-// Update the handleChange function within ChargesCalculator component
-const handleChange = (e, chargeKey) => {
-  const { name, value } = e.target;
-  const updatedCharges = {
-    ...localCharges,
-    [chargeKey]: {
-      ...localCharges[chargeKey],
-      [name]: value,
-    },
+  // Update the handleChange function within ChargesCalculator component
+  const handleChange = (e, chargeKey) => {
+    const { name, value } = e.target;
+    const updatedCharges = {
+      ...localCharges,
+      [chargeKey]: {
+        ...localCharges[chargeKey],
+        [name]: value,
+      },
+    };
+    setLocalCharges(updatedCharges);
+    dispatch(setCharges(updatedCharges));
   };
-  setLocalCharges(updatedCharges);
-  dispatch(setCharges(updatedCharges));
-};
-
 
   const calculationOptions = [
     { value: 'chargeableWeight', label: 'Chargeable Weight' },
@@ -128,73 +127,61 @@ const handleChange = (e, chargeKey) => {
           />
 
           {/* Fuel Surcharge (FSC) Input and Selector */}
-          <div className="w-1/3 pr-1 flex flex-col">
-            <input
-              type="number"
-              name="value"
-              placeholder="Fuel Surcharge (FSC)"
-              value={localCharges.fsc.value}
-              onChange={(e) => handleChange(e, 'fsc')}
-              className="py-2 px-4 w-full mb-0.5"
-            />
-            <Select
-              value={calculationOptions.find(
-                (option) => option.value === localCharges.fsc.calculationMethod
-              )}
-              onChange={handleCalculationMethodChangeForFSC}
-              options={calculationOptions}
-              classNamePrefix="react-select"
-              styles={reactSelectCustomStyles}
-            />
-          </div>
+          <ChargeInput
+            chargeType="fsc"
+            label="Fuel Surcharge (FSC)"
+            chargeDetails={localCharges.fsc}
+            onChange={(e) => handleChange(e, 'fsc')}
+            calculationOptions={calculationOptions}
+            onCalculationMethodChange={(selectedOption) =>
+              handleCalculationMethodChange('fsc', selectedOption)
+            }
+          />
 
           {/* Security Surcharge (SSC) Input and Selector */}
-          <div className="w-1/3 pr-1 flex flex-col">
-            <input
-              type="number"
-              name="value"
-              placeholder="Security Surcharge (SSC)"
-              value={localCharges.ssc.value}
-              onChange={(e) => handleChange(e, 'ssc')}
-              className="py-2 px-4 mb-0.5"
-            />
-            <Select
-              value={calculationOptions.find(
-                (option) => option.value === localCharges.ssc.calculationMethod
-              )}
-              onChange={handleCalculationMethodChangeForSSC}
-              options={calculationOptions}
-              classNamePrefix="react-select"
-              styles={reactSelectCustomStyles}
-            />
-          </div>
+          <ChargeInput
+            chargeType="ssc"
+            label="Security Surcharge (SSC)"
+            chargeDetails={localCharges.ssc}
+            onChange={(e) => handleChange(e, 'ssc')}
+            calculationOptions={calculationOptions}
+            onCalculationMethodChange={(selectedOption) =>
+              handleCalculationMethodChange('ssc', selectedOption)
+            }
+          />
 
-          <div className="flex mb-2 space-x-2  mt-4 w-full">
-            <input
-              type="number"
-              name="value"
-              placeholder="Airport Terminal"
-              value={localCharges.airportTerminal.value}
-              onChange={handleChange}
-              className="py-2 px-4 w-1/3"
-            />
-            <input
-              type="number"
-              name="value"
-              placeholder="Pick-up"
-              value={localCharges.pickUp.value}
-              onChange={handleChange}
-              className="py-2 px-4 w-1/3"
-            />
-            <input
-              type="number"
-              name="value"
-              placeholder="Custom Clearance"
-              value={localCharges.customClearance.value}
-              onChange={handleChange}
-              className="py-2 px-4 w-1/3"
-            />
-          </div>
+          <ChargeInput
+            chargeType="airportTerminal"
+            label="Airport Terminal"
+            chargeDetails={localCharges.airportTerminal}
+            onChange={handleChange}
+            calculationOptions={calculationOptions}
+            onCalculationMethodChange={(selectedOption) =>
+              handleCalculationMethodChange('airportTerminal', selectedOption)
+            }
+          />
+
+          <ChargeInput
+            chargeType="pickUp"
+            label="Pick-up"
+            chargeDetails={localCharges.pickUp}
+            onChange={handleChange}
+            calculationOptions={calculationOptions}
+            onCalculationMethodChange={(selectedOption) =>
+              handleCalculationMethodChange('pickUp', selectedOption)
+            }
+          />
+
+          <ChargeInput
+            chargeType="customClearance"
+            label="Custom Clearance"
+            chargeDetails={localCharges.customClearance}
+            onChange={handleChange}
+            calculationOptions={calculationOptions}
+            onCalculationMethodChange={(selectedOption) =>
+              handleCalculationMethodChange('customClearance', selectedOption)
+            }
+          />
         </div>
         {getCustomChargeRows().map((row, rowIndex) => (
           <div key={rowIndex} className="flex mb-2 space-x-2 mt-2">
