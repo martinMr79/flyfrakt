@@ -17,7 +17,6 @@ function ChargesCalculator() {
     charges: chargesRedux,
   } = useSelector((state) => state.volumeWeightCalculator);
 
-
   const [localCharges, setLocalCharges] = useState(
     chargesRedux || {
       pricePerKg: '',
@@ -35,9 +34,6 @@ function ChargesCalculator() {
     setLocalCharges,
     dispatch
   );
-
-
-
 
   const handleChange = (e, chargeKey) => {
     const { name, value } = e.target;
@@ -90,7 +86,6 @@ function ChargesCalculator() {
   const grandTotal = parseFloat(totalCharges) + customChargesTotal;
 
   const formattedGrandTotal = grandTotal.toFixed(2);
-
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
@@ -180,12 +175,12 @@ function ChargesCalculator() {
         {getCustomChargeRows().map((row, rowIndex) => (
           <div key={rowIndex} className="flex mb-2 space-x-2 mt-2 pr-1">
             {row.map((charge, index) => {
-              const absoluteIndex = rowIndex * 3 + index;
+              const absoluteIndex = rowIndex * 3 + index; // Calculate the absolute index based on row and column
               return (
                 <ChargeInput
                   key={absoluteIndex}
                   chargeType={`customCharge${absoluteIndex}`}
-                  label="Custom Charge"
+                  label={`Custom Charge ${absoluteIndex + 1}`}
                   chargeDetails={charge}
                   onChange={(e) =>
                     handleCustomChargeChange(
@@ -264,7 +259,7 @@ function ChargesCalculator() {
           ))}
         </div>
         <h2 className="text-xl mt-8 font-bold">
-        Total Price: ${formattedGrandTotal}
+          Total Price: ${formattedGrandTotal}
         </h2>
       </div>
 
