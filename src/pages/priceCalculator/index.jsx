@@ -17,6 +17,7 @@ function ChargesCalculator() {
     charges: chargesRedux,
   } = useSelector((state) => state.volumeWeightCalculator);
 
+
   const [localCharges, setLocalCharges] = useState(
     chargesRedux || {
       pricePerKg: '',
@@ -35,7 +36,9 @@ function ChargesCalculator() {
     dispatch
   );
 
-  // Update the handleChange function within ChargesCalculator component
+
+
+
   const handleChange = (e, chargeKey) => {
     const { name, value } = e.target;
     const updatedCharges = {
@@ -66,6 +69,16 @@ function ChargesCalculator() {
     setLocalCharges
   );
 
+  const customChargesTotal = localCharges.customCharges.reduce(
+    (total, charge) => {
+      return (
+        total +
+        parseFloat(calculateCharge(charge, chargeableWeight, totalWeight) || 0)
+      );
+    },
+    0
+  );
+
   const getCustomChargeRows = () => {
     const rows = [];
     for (let i = 0; i < localCharges.customCharges.length; i += 3) {
@@ -73,6 +86,11 @@ function ChargesCalculator() {
     }
     return rows;
   };
+
+  const grandTotal = parseFloat(totalCharges) + customChargesTotal;
+
+  const formattedGrandTotal = grandTotal.toFixed(2);
+
 
   return (
     <div className="mx-auto max-w-screen-xl px-5 py-10 flex flex-col items-center">
@@ -160,24 +178,35 @@ function ChargesCalculator() {
         </div>
 
         {getCustomChargeRows().map((row, rowIndex) => (
-  <div key={rowIndex} className="flex mb-2 space-x-2 mt-2 pr-1">
-    {row.map((charge, index) => {
-      const absoluteIndex = rowIndex * 3 + index;
-      return (
-        <ChargeInput
-          key={absoluteIndex}
-          chargeType={`customCharge${absoluteIndex}`}
-          label="Custom Charge"
-          chargeDetails={charge}
-          onChange={(e) => handleCustomChargeChange(absoluteIndex, e.target.value, 'value')}
-          calculationOptions={calculationOptions}
-          onCalculationMethodChange={(selectedOption) => handleCustomChargeChange(absoluteIndex, selectedOption.value, 'calculationMethod')}
-        />
-      );
-    })}
-  </div>
-))}
-
+          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2 pr-1">
+            {row.map((charge, index) => {
+              const absoluteIndex = rowIndex * 3 + index;
+              return (
+                <ChargeInput
+                  key={absoluteIndex}
+                  chargeType={`customCharge${absoluteIndex}`}
+                  label="Custom Charge"
+                  chargeDetails={charge}
+                  onChange={(e) =>
+                    handleCustomChargeChange(
+                      absoluteIndex,
+                      e.target.value,
+                      'value'
+                    )
+                  }
+                  calculationOptions={calculationOptions}
+                  onCalculationMethodChange={(selectedOption) =>
+                    handleCustomChargeChange(
+                      absoluteIndex,
+                      selectedOption.value,
+                      'calculationMethod'
+                    )
+                  }
+                />
+              );
+            })}
+          </div>
+        ))}
 
         <button
           onClick={addCustomField}
@@ -227,8 +256,16 @@ function ChargesCalculator() {
               totalWeight
             )}
           </div>
+          {localCharges.customCharges.map((charge, index) => (
+            <div key={index}>
+              Custom Charge {index + 1}: $
+              {calculateCharge(charge, chargeableWeight, totalWeight)}
+            </div>
+          ))}
         </div>
-        <h2 className="text-xl mt-8 font-bold">Total Price: ${totalCharges}</h2>
+        <h2 className="text-xl mt-8 font-bold">
+        Total Price: ${formattedGrandTotal}
+        </h2>
       </div>
 
       <div className="pt-8">
