@@ -18,7 +18,11 @@ export const volumeWeightCalculatorSlice = createSlice({
       pickUp: '',
       customClearance: '',
       calculationMethod: 'chargeableWeight',
-      customCharges: [],
+      customCharges: [
+        { name: "Custom Charge 1", value: '', calculationMethod: 'chargeableWeight' },
+        // More custom charges as needed
+      ]
+      
     },
   },
   reducers: {

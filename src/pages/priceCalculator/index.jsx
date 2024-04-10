@@ -160,21 +160,24 @@ function ChargesCalculator() {
         </div>
 
         {getCustomChargeRows().map((row, rowIndex) => (
-          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2 pr-1">
-            {row.map((charge, index) => (
-              <input
-                key={rowIndex * 3 + index}
-                type="number"
-                placeholder="Custom charge"
-                value={charge.value}
-                onChange={(e) =>
-                  handleCustomChargeChange(rowIndex * 3 + index, e.target.value)
-                }
-                className="py-2 px-4 w-1/3"
-              />
-            ))}
-          </div>
-        ))}
+  <div key={rowIndex} className="flex mb-2 space-x-2 mt-2 pr-1">
+    {row.map((charge, index) => {
+      const absoluteIndex = rowIndex * 3 + index;
+      return (
+        <ChargeInput
+          key={absoluteIndex}
+          chargeType={`customCharge${absoluteIndex}`}
+          label="Custom Charge"
+          chargeDetails={charge}
+          onChange={(e) => handleCustomChargeChange(absoluteIndex, e.target.value, 'value')}
+          calculationOptions={calculationOptions}
+          onCalculationMethodChange={(selectedOption) => handleCustomChargeChange(absoluteIndex, selectedOption.value, 'calculationMethod')}
+        />
+      );
+    })}
+  </div>
+))}
+
 
         <button
           onClick={addCustomField}
