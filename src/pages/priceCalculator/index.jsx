@@ -65,6 +65,15 @@ function ChargesCalculator() {
     setLocalCharges
   );
 
+  const handleRemoveCustomCharge = (index) => {
+    const updatedCustomCharges = localCharges.customCharges.filter(
+      (_, i) => i !== index
+    );
+    const newCharges = { ...localCharges, customCharges: updatedCustomCharges };
+    setLocalCharges(newCharges);
+    dispatch(setCharges(newCharges));
+  };
+
   const customChargesTotal = localCharges.customCharges.reduce(
     (total, charge) => {
       return (
@@ -107,9 +116,9 @@ function ChargesCalculator() {
             chargeDetails={localCharges.pricePerKg}
             onChange={handleChange} // Make sure this function can handle changes appropriately.
             calculationOptions={calculationOptions}
-            onCalculationMethodChange={(selectedOption) =>
-              handleCalculationMethodChange('pricePerKg', selectedOption)
-            }
+            onCalculationMethodChange={(selectedOption) => handleCalculationMethodChange('pricePerKg', selectedOption)}
+            isCustomField={false}
+            
           />
 
           {/* Fuel Surcharge (FSC) Input and Selector */}
@@ -173,31 +182,33 @@ function ChargesCalculator() {
         </div>
 
         {getCustomChargeRows().map((row, rowIndex) => (
-          <div key={rowIndex} className="flex mb-2 space-x-2 mt-2 pr-1">
+          <div key={rowIndex} className="grid grid-cols-3 gap-4 mb-2 mt-2">
             {row.map((charge, index) => {
-              const absoluteIndex = rowIndex * 3 + index; // Calculate the absolute index based on row and column
+              const absoluteIndex = rowIndex * 3 + index;
               return (
-                <ChargeInput
+                <div
                   key={absoluteIndex}
-                  chargeType={`customCharge${absoluteIndex}`}
-                  label={`Custom Charge ${absoluteIndex + 1}`}
-                  chargeDetails={charge}
-                  onChange={(e) =>
-                    handleCustomChargeChange(
-                      absoluteIndex,
-                      e.target.value,
-                      'value'
-                    )
-                  }
-                  calculationOptions={calculationOptions}
-                  onCalculationMethodChange={(selectedOption) =>
-                    handleCustomChargeChange(
-                      absoluteIndex,
-                      selectedOption.value,
-                      'calculationMethod'
-                    )
-                  }
-                />
+                  className="flex items-center space-x-2"
+                >
+<ChargeInput
+  chargeType={`customCharge${absoluteIndex}`}
+  label={`Custom Charge ${absoluteIndex + 1}`}
+  chargeDetails={charge}
+  onChange={(e) => handleCustomChargeChange(absoluteIndex, e.target.value, 'value')}
+  calculationOptions={calculationOptions}
+  onCalculationMethodChange={(selectedOption) => handleCustomChargeChange(absoluteIndex, selectedOption.value, 'calculationMethod')}
+  isCustomField={true}
+  
+/>
+                  {localCharges.customCharges.length > 1 && (
+                    <img
+                      src="/icons/delete_icon.svg"
+                      alt="Delete"
+                      className="w-4 h-4 cursor-pointer flex-shrink-0"
+                      onClick={() => handleRemoveCustomCharge(absoluteIndex)}
+                    />
+                  )}
+                </div>
               );
             })}
           </div>

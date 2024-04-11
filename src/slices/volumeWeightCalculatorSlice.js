@@ -56,9 +56,7 @@ export const volumeWeightCalculatorSlice = createSlice({
       }
     },
     // Example additional reducer for removing a custom charge if needed
-    removeCustomCharge: (state, action) => {
-      state.charges.customCharges = state.charges.customCharges.filter((_, index) => index !== action.payload);
-    },
+
   },
 });
 
