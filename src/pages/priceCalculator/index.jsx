@@ -107,7 +107,9 @@ function ChargesCalculator() {
         <p>Chargeable Weight: {chargeableWeight} kg</p>
       </div>
       <div className="bg-gray-200 w-full px-5 py-10">
+      <div className="text-center mb-10 text-2xl "><h2>Airline Charges</h2></div>
         <div className="flex flex-wrap mb-2 mt-4">
+          
           {/* Price per Kg Input and Selector */}
           {/* Implement ChargeInput for each charge type */}
           <ChargeInput
@@ -116,9 +118,10 @@ function ChargesCalculator() {
             chargeDetails={localCharges.pricePerKg}
             onChange={handleChange} // Make sure this function can handle changes appropriately.
             calculationOptions={calculationOptions}
-            onCalculationMethodChange={(selectedOption) => handleCalculationMethodChange('pricePerKg', selectedOption)}
+            onCalculationMethodChange={(selectedOption) =>
+              handleCalculationMethodChange('pricePerKg', selectedOption)
+            }
             isCustomField={false}
-            
           />
 
           {/* Fuel Surcharge (FSC) Input and Selector */}
@@ -180,6 +183,9 @@ function ChargesCalculator() {
             }
           />
         </div>
+        <div className="text-center my-10 text-2xl ">
+          <h2>Other Charges</h2>
+        </div>
 
         {getCustomChargeRows().map((row, rowIndex) => (
           <div key={rowIndex} className="grid grid-cols-3 gap-4 mb-2 mt-2">
@@ -190,16 +196,27 @@ function ChargesCalculator() {
                   key={absoluteIndex}
                   className="flex items-center space-x-2"
                 >
-<ChargeInput
-  chargeType={`customCharge${absoluteIndex}`}
-  label={`Custom Charge ${absoluteIndex + 1}`}
-  chargeDetails={charge}
-  onChange={(e) => handleCustomChargeChange(absoluteIndex, e.target.value, 'value')}
-  calculationOptions={calculationOptions}
-  onCalculationMethodChange={(selectedOption) => handleCustomChargeChange(absoluteIndex, selectedOption.value, 'calculationMethod')}
-  isCustomField={true}
-  
-/>
+                  <ChargeInput
+                    chargeType={`customCharge${absoluteIndex}`}
+                    label={`Custom Charge ${absoluteIndex + 1}`}
+                    chargeDetails={charge}
+                    onChange={(e) =>
+                      handleCustomChargeChange(
+                        absoluteIndex,
+                        e.target.value,
+                        'value'
+                      )
+                    }
+                    calculationOptions={calculationOptions}
+                    onCalculationMethodChange={(selectedOption) =>
+                      handleCustomChargeChange(
+                        absoluteIndex,
+                        selectedOption.value,
+                        'calculationMethod'
+                      )
+                    }
+                    isCustomField={true}
+                  />
                   {localCharges.customCharges.length > 1 && (
                     <img
                       src="/icons/delete_icon.svg"
